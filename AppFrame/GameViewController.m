@@ -8,6 +8,8 @@
 
 #import "GameViewController.h"
 #import "SharedStructures.h"
+#import "MainLoop_Bridge.h"
+#import "Graphics_Bridge.hpp"
 
 @import simd;
 @import ModelIO;
@@ -17,6 +19,9 @@ static const NSUInteger kMaxInflightBuffers = 3;
 
 // Max API memory buffer size.
 static const size_t kMaxBytesPerFrame = 1024*1024;
+
+
+id <MTLDevice> _device;
 
 @implementation GameViewController
 {
@@ -29,7 +34,6 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     uint8_t _constantDataBufferIndex;
     
     // renderer
-    id <MTLDevice> _device;
     id <MTLCommandQueue> _commandQueue;
     id <MTLLibrary> _defaultLibrary;
     id <MTLRenderPipelineState> _pipelineState;
@@ -48,6 +52,8 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    MainLoopBridge_StartGameLoop();
     
     _constantDataBufferIndex = 0;
     _inflight_semaphore = dispatch_semaphore_create(3);
@@ -78,6 +84,42 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
     
     // Load all the shader files with a metal file extension in the project
     _defaultLibrary = [_device newDefaultLibrary];
+}
+
+
+void* Graphics_CreateMesh(enum MeshType Type)
+{
+    switch (Type)
+    {
+        case CUBE:
+        {
+            MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1}
+                                                segments:(vector_uint3){1,1,1}
+                                                geometryType:MDLGeometryTypeTriangles
+                                                inwardNormals:NO
+                                                allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+            
+            MTKMesh* Ret = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
+            return (__bridge_retained void*)Ret;
+        }
+        case SPHERE:
+        {
+            MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5,0.1,1}
+                                    radialSegments:50
+                                    verticalSegments:50
+                                    geometryType:MDLGeometryTypeTriangles
+                                    inwardNormals:NO
+                                    hemisphere:NO
+                                    allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+            
+            MTKMesh* Ret = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
+            return (__bridge_retained void*)Ret;
+        }
+        default:
+            break;
+    }
+    
+    return nil;
 }
 
 - (void)_loadAssets
@@ -148,35 +190,87 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
     if(renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
     {
-        // Create a render command encoder so we can render into something
-        id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
-        renderEncoder.label = @"MyRenderEncoder";
-        [renderEncoder setDepthStencilState:_depthState];
+        //lock
+        //if not empty
+        //getdata
+        //render
+        //unlock
         
-        // Set context state
-        [renderEncoder pushDebugGroup:@"DrawCube"];
-        [renderEncoder setRenderPipelineState:_pipelineState];
-        [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
-        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * _constantDataBufferIndex) atIndex:1 ];
         
-        MTKSubmesh* submesh = _boxMesh.submeshes[0];
-        // Tell the render context we want to draw our primitives
-        [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer indexBufferOffset:submesh.indexBuffer.offset];
-
-        [renderEncoder popDebugGroup];
+        Graphics_LockRenderQueue();
         
-        // We're done encoding commands
-        [renderEncoder endEncoding];
+        if(!Graphics_IsRenderQueueEmpty())
+        {
+        
+            // Create a render command encoder so we can render into something
+            id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
+            renderEncoder.label = @"MyRenderEncoder";
+            [renderEncoder setDepthStencilState:_depthState];
+            
+            while (!Graphics_IsRenderQueueEmpty())
+            {
+                void* MeshData = Graphics_PopAndGetMeshData();
+                
+                _boxMesh = (__bridge MTKMesh*)Graphics_GetRawData(MeshData);
+                
+                float x = 0;
+                float y = 0;
+                float z = 0;
+                Graphics_GetLocation(MeshData, &x, &y, &z);
+                
+                if (_boxMesh != nil)
+                {
+                    // Set context state
+                    [renderEncoder pushDebugGroup:[_boxMesh name]];
+                    [renderEncoder setRenderPipelineState:_pipelineState];
+                    [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
+                    if([[_boxMesh name] isEqualToString: @"box"])
+                    {
+                        float newRoattion = 1;
+                        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(newRoattion, 0.0f, 1.0f, 0.0f));
+                        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
+                        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(newRoattion, 1.0f, 1.0f, 1.0f));
+                        
+                        // Load constant buffer data into appropriate buffer at current index
+                        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[0];
+                        
+                        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
+                        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
+                        
+                        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * 0) atIndex:1 ];
+                    }
+                    else
+                    {
+                        
+                        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * 1) atIndex:1 ];
+                    }
+                    
+                    MTKSubmesh* submesh = _boxMesh.submeshes[0];
+                    // Tell the render context we want to draw our primitives
+                    [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer indexBufferOffset:submesh.indexBuffer.offset];
+                    
+                    [renderEncoder popDebugGroup];
+                }
+            }
+            
+            
+            // We're done encoding commands
+            [renderEncoder endEncoding];
+            
+            
+            // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
+            _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
+        }
+        
+        Graphics_UnlockRenderQueue();
+        
         
         // Schedule a present once the framebuffer is complete using the current drawable
         [commandBuffer presentDrawable:_view.currentDrawable];
+        
+        // Finalize rendering here & push the command buffer to the GPU
+        [commandBuffer commit];
     }
-
-    // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
-    _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
-
-    // Finalize rendering here & push the command buffer to the GPU
-    [commandBuffer commit];
 }
 
 - (void)_reshape
@@ -190,16 +284,34 @@ static const size_t kMaxBytesPerFrame = 1024*1024;
 
 - (void)_update
 {
-    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
-    matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
-    matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
+    if(_constantDataBufferIndex == 0)
+    {
+        float newRoattion = 1;
+        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(newRoattion, 0.0f, 1.0f, 0.0f));
+        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
+        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(newRoattion, 1.0f, 1.0f, 1.0f));
+        
+        // Load constant buffer data into appropriate buffer at current index
+        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];
+        
+        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
+        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
+        //_rotation += 0.01f;
     
-    // Load constant buffer data into appropriate buffer at current index
-    uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];
-
-    uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
-    uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);    
-    _rotation += 0.01f;
+    }
+    else{
+        
+        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
+        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
+        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
+        
+        // Load constant buffer data into appropriate buffer at current index
+        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];
+        
+        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
+        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
+        _rotation += 0.01f;
+    }
 }
 
 // Called whenever view changes orientation or layout is changed

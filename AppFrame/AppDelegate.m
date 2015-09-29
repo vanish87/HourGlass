@@ -17,6 +17,15 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    
+    int width = _window.bounds.size.width;
+    int height = _window.bounds.size.height;
+    
+    float NativeSacle = [UIScreen mainScreen].nativeScale;
+    CGRect ScreenBuond = [UIScreen mainScreen].nativeBounds;
+    
+    
+    
     return YES;
 }
 
