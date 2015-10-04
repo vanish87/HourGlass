@@ -15,7 +15,8 @@
 @import ModelIO;
 
 // The max number of command buffers in flight
-static const NSUInteger kMaxInflightBuffers = 3;
+//this should be a very large num for each object
+static NSUInteger kMaxInflightBuffers = 3;
 
 // Max API memory buffer size.
 static const size_t kMaxBytesPerFrame = 1024*1024;
@@ -39,6 +40,8 @@ id <MTLDevice> _device;
     id <MTLRenderPipelineState> _pipelineState;
     id <MTLDepthStencilState> _depthState;
     
+    id<MTLTexture> framebufferTexture;
+    
     // uniforms
     matrix_float4x4 _projectionMatrix;
     matrix_float4x4 _viewMatrix;
@@ -47,6 +50,8 @@ id <MTLDevice> _device;
     
     // meshes
     MTKMesh *_boxMesh;
+    
+    NSDate *start;
 }
 
 - (void)viewDidLoad
@@ -104,9 +109,9 @@ void* Graphics_CreateMesh(enum MeshType Type)
         }
         case SPHERE:
         {
-            MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){0.5,0.1,1}
-                                    radialSegments:50
-                                    verticalSegments:50
+            MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){1,1,0.1}
+                                    radialSegments:5
+                                    verticalSegments:5
                                     geometryType:MDLGeometryTypeTriangles
                                     inwardNormals:NO
                                     hemisphere:NO
@@ -114,6 +119,17 @@ void* Graphics_CreateMesh(enum MeshType Type)
             
             MTKMesh* Ret = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
             return (__bridge_retained void*)Ret;
+        }
+        case PLANE:
+        {
+            MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){5,5}
+                                    segments:(vector_uint2){5,5}
+                                    geometryType:MDLGeometryTypeTriangles
+                                    allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
+            
+            MTKMesh* Ret = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
+            return (__bridge_retained void*)Ret;
+            
         }
         default:
             break;
@@ -124,12 +140,16 @@ void* Graphics_CreateMesh(enum MeshType Type)
 
 - (void)_loadAssets
 {
+    start = [NSDate date];
+    
+    
     // Generate meshes
     MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){2,2,2} segments:(vector_uint3){1,1,1}
                                     geometryType:MDLGeometryTypeTriangles inwardNormals:NO
                                        allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
     
     _boxMesh = [[MTKMesh alloc] initWithMesh:mdl device:_device error:nil];
+    
     
     // Allocate one region of memory for the uniform buffer
     _dynamicConstantBuffer = [_device newBufferWithLength:kMaxBytesPerFrame options:0];
@@ -153,9 +173,32 @@ void* Graphics_CreateMesh(enum MeshType Type)
     pipelineStateDescriptor.vertexFunction = vertexProgram;
     pipelineStateDescriptor.fragmentFunction = fragmentProgram;
     pipelineStateDescriptor.vertexDescriptor = vertexDescriptor;
+    
+    pipelineStateDescriptor.colorAttachments[0].blendingEnabled = NO;
+    pipelineStateDescriptor.colorAttachments[0].rgbBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].alphaBlendOperation = MTLBlendOperationAdd;
+    pipelineStateDescriptor.colorAttachments[0].sourceRGBBlendFactor = MTLBlendFactorZero;
+    pipelineStateDescriptor.colorAttachments[0].sourceAlphaBlendFactor = MTLBlendFactorZero;
+    pipelineStateDescriptor.colorAttachments[0].destinationRGBBlendFactor = MTLBlendFactorOne;
+    pipelineStateDescriptor.colorAttachments[0].destinationAlphaBlendFactor = MTLBlendFactorOne;
     pipelineStateDescriptor.colorAttachments[0].pixelFormat = _view.colorPixelFormat;
     pipelineStateDescriptor.depthAttachmentPixelFormat = _view.depthStencilPixelFormat;
     pipelineStateDescriptor.stencilAttachmentPixelFormat = _view.depthStencilPixelFormat;
+    
+    
+    id<CAMetalDrawable> drawable = _view.currentDrawable;
+    id<MTLTexture> backbuffer = drawable.texture;
+    
+    MTLTextureDescriptor* txDesc = [[MTLTextureDescriptor alloc] init];
+    txDesc.textureType = [backbuffer textureType];
+    txDesc.height = [backbuffer height];
+    txDesc.width = [backbuffer width];
+    txDesc.depth = [backbuffer depth];
+    txDesc.pixelFormat = [backbuffer pixelFormat];
+    txDesc.arrayLength = 1;
+    txDesc.mipmapLevelCount = 1;
+    //framebufferTexture =[_device newTextureWithDescriptor:txDesc];
+
     
     NSError *error = NULL;
     _pipelineState = [_device newRenderPipelineStateWithDescriptor:pipelineStateDescriptor error:&error];
@@ -172,8 +215,6 @@ void* Graphics_CreateMesh(enum MeshType Type)
 - (void)_render
 {
     dispatch_semaphore_wait(_inflight_semaphore, DISPATCH_TIME_FOREVER);
-    
-    [self _update];
 
     // Create a new command buffer for each renderpass to the current drawable
     id <MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
@@ -183,10 +224,19 @@ void* Graphics_CreateMesh(enum MeshType Type)
     __block dispatch_semaphore_t block_sema = _inflight_semaphore;
     [commandBuffer addCompletedHandler:^(id<MTLCommandBuffer> buffer) {
         dispatch_semaphore_signal(block_sema);
+        
     }];
     
     // Obtain a renderPassDescriptor generated from the view's drawable textures
     MTLRenderPassDescriptor* renderPassDescriptor = _view.currentRenderPassDescriptor;
+    
+    
+    
+    id<CAMetalDrawable> drawable = _view.currentDrawable;
+    renderPassDescriptor.colorAttachments[0].texture = [drawable texture];
+    
+    renderPassDescriptor.colorAttachments[0].loadAction = MTLLoadActionClear;
+    renderPassDescriptor.colorAttachments[0].clearColor = MTLClearColorMake(0.3,0.3,0.3,1.0);
 
     if(renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
     {
@@ -201,7 +251,8 @@ void* Graphics_CreateMesh(enum MeshType Type)
         
         if(!Graphics_IsRenderQueueEmpty())
         {
-        
+            unsigned long BufferCount = 0;
+            
             // Create a render command encoder so we can render into something
             id <MTLRenderCommandEncoder> renderEncoder = [commandBuffer renderCommandEncoderWithDescriptor:renderPassDescriptor];
             renderEncoder.label = @"MyRenderEncoder";
@@ -209,14 +260,12 @@ void* Graphics_CreateMesh(enum MeshType Type)
             
             while (!Graphics_IsRenderQueueEmpty())
             {
+                
+                
                 void* MeshData = Graphics_PopAndGetMeshData();
                 
                 _boxMesh = (__bridge MTKMesh*)Graphics_GetRawData(MeshData);
                 
-                float x = 0;
-                float y = 0;
-                float z = 0;
-                Graphics_GetLocation(MeshData, &x, &y, &z);
                 
                 if (_boxMesh != nil)
                 {
@@ -224,42 +273,45 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     [renderEncoder pushDebugGroup:[_boxMesh name]];
                     [renderEncoder setRenderPipelineState:_pipelineState];
                     [renderEncoder setVertexBuffer:_boxMesh.vertexBuffers[0].buffer offset:_boxMesh.vertexBuffers[0].offset atIndex:0 ];
-                    if([[_boxMesh name] isEqualToString: @"box"])
-                    {
-                        float newRoattion = 1;
-                        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(newRoattion, 0.0f, 1.0f, 0.0f));
-                        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
-                        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(newRoattion, 1.0f, 1.0f, 1.0f));
                         
-                        // Load constant buffer data into appropriate buffer at current index
-                        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[0];
-                        
-                        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
-                        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
-                        
-                        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * 0) atIndex:1 ];
-                    }
-                    else
-                    {
-                        
-                        [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t) * 1) atIndex:1 ];
-                    }
+                    float x = 0;
+                    float y = 0;
+                    float z = 0;
+                    Graphics_GetLocation(MeshData, &x, &y, &z);
+                    
+                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
+                    matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
+                    matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(0, 1.0f, 1.0f, 1.0f));
+                    
+                    // Load constant buffer data into appropriate buffer at current index
+                    uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[BufferCount];
+                    
+                    uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
+                    uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
+                    
+                    [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t)*BufferCount) atIndex:1 ];
+                    
+                    BufferCount++;
                     
                     MTKSubmesh* submesh = _boxMesh.submeshes[0];
                     // Tell the render context we want to draw our primitives
                     [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer indexBufferOffset:submesh.indexBuffer.offset];
                     
                     [renderEncoder popDebugGroup];
+                    
                 }
+                
+                
+                
+                
             }
             
             
             // We're done encoding commands
             [renderEncoder endEncoding];
             
-            
             // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
-            _constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
+            //_constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
         }
         
         Graphics_UnlockRenderQueue();
@@ -267,6 +319,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         
         // Schedule a present once the framebuffer is complete using the current drawable
         [commandBuffer presentDrawable:_view.currentDrawable];
+        
         
         // Finalize rendering here & push the command buffer to the GPU
         [commandBuffer commit];
@@ -284,7 +337,8 @@ void* Graphics_CreateMesh(enum MeshType Type)
 
 - (void)_update
 {
-    if(_constantDataBufferIndex == 0)
+    return;
+    if(_constantDataBufferIndex == 0 && false)
     {
         float newRoattion = 1;
         matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(newRoattion, 0.0f, 1.0f, 0.0f));
@@ -306,7 +360,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
         
         // Load constant buffer data into appropriate buffer at current index
-        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];
+        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[1];
         
         uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
         uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);

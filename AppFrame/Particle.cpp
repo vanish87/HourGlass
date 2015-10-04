@@ -16,7 +16,7 @@ namespace Physics
     Particle::Particle(MeshType Type)
     :SceneObject::SceneObject()
     {
-        this->RenderElement = new Mesh(Graphics_CreateMesh(Type));
+        this->RenderElement = new Mesh(Type);
     };
     Particle::~Particle()
     {

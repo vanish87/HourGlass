@@ -53,6 +53,12 @@ void Graphics_GetLocation(void* MeshData, float* x, float* y, float* z)
     }
 }
 
+unsigned long Graphics_GetNumberOfMeshes()
+{
+    std::vector<Engine::Mesh*>& RenderData = Context::Instance().GetSceneManager().GetRenderList();
+    return RenderData.size();
+};
+
 void* Graphics_PopAndGetMeshData()
 {
     std::vector<Engine::Mesh*>& RenderData = Context::Instance().GetSceneManager().GetRenderList();

@@ -7,16 +7,19 @@
 //
 
 #include "Mesh.hpp"
+
 namespace Engine
 {
-    Mesh::Mesh(void* Data_, float3 Location_)
-    :Location(Location_), Data(Data_)
+    Mesh::Mesh(MeshType Type, float3 Location_)
+    :Location(Location_)
     {
+        this->Data = Graphics_CreateMesh(Type);
     };
     
     Mesh::~Mesh()
     {
-        
+        //free data in objectivec
+        this->Data = nullptr;
     };
     
     

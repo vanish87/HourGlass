@@ -13,6 +13,7 @@ enum MeshType
 {
     CUBE,
     SPHERE,
+    PLANE,
 };
 
 #ifdef __cplusplus
@@ -27,6 +28,8 @@ bool  Graphics_LockRenderQueue();
 bool  Graphics_UnlockRenderQueue();
 bool  Graphics_IsRenderQueueEmpty();
 void* Graphics_PopAndGetMeshData();
+    
+unsigned long Graphics_GetNumberOfMeshes();
 
 #ifdef __cplusplus
 }

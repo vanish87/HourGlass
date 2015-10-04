@@ -12,13 +12,15 @@
 #include "PreDeclear.h"
 #include "Vector.h"
 
+#include "Graphics_Bridge.hpp"
+
 namespace Engine
 {
     class Mesh
     {
         friend class SceneObject;
     public:
-        Mesh(void* Data, float3 Location = float3(0,0,0));
+        Mesh(MeshType Type = CUBE, float3 Location = float3(0,0,0));
         virtual ~Mesh();
         
         void SetLocation(const float3& NewLocation);
