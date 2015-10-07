@@ -36,6 +36,11 @@ namespace Engine {
     class Vec4;
     typedef Vec4<int32_t> int4;
     typedef Vec4<float> float4;
+
+
+	template <typename T>
+	class Matrix;
+	typedef Matrix<float> float4x4;
 }
 
 

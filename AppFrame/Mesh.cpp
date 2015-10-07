@@ -25,7 +25,7 @@ namespace Engine
     
     void Mesh::SetLocation(const float3& NewLocation)
     {
-        this->Location = NewLocation;
+        this->MeshMatrix.Row(3) = NewLocation;
     };
     
     

@@ -34,9 +34,12 @@ namespace Engine
 	}
     
     
-    void SceneObject::SetLocation(float3 NewLocation)
+    void SceneObject::SetLocation(const float3& NewLocation)
     {
-        this->Location = NewLocation;
+		if (this->RenderElement != nullptr)
+		{
+			this->RenderElement->SetLocation(NewLocation);
+		}
     }
 
 	void SceneObject::AddToScene()

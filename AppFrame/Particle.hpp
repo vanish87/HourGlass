@@ -35,6 +35,7 @@ namespace Physics {
         void ApplyForce(const float3& Force_);
         
     protected:
+		float3 Location;//physics location that differs from render element's
         float3 Velocity;
         float3 Acceleration;
         

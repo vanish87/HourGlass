@@ -10,7 +10,7 @@
 #define Mesh_hpp
 
 #include "PreDeclear.h"
-#include "Vector.h"
+#include "Matrix.h"
 
 #include "Graphics_Bridge.hpp"
 
@@ -27,8 +27,8 @@ namespace Engine
         float3 GetLocation();
         void* GetRawData();
         
-    private:
-        float3 Location;
+	private:
+		float4x4 MeshMatrix;
         void* Data;
     };
 }

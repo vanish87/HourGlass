@@ -40,6 +40,8 @@ namespace Physics
         this->RenderElement->SetLocation( this->Location);
         
         this->Acceleration = float3(0,0,0);
+
+		this->RenderElement->SetLocation(this->Location);
     };
     void Particle::Render()
     {

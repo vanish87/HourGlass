@@ -3,7 +3,6 @@
 
 #pragma once
 #include "PreDeclear.h"
-#include "Vector.h"
 #include "Mesh.hpp"
 
 namespace Engine
@@ -13,9 +12,9 @@ namespace Engine
 	public:
 		SceneObject(void);
 		SceneObject(Mesh* render_element)
-			:RenderElement(render_element),Location(float3(0,0,0)), Visiable(true)
+			:RenderElement(render_element), Visiable(true)
 		{
-            
+
 		};
 		~SceneObject(void);
 
@@ -28,12 +27,10 @@ namespace Engine
 		bool IsVisiable();
 		void SetVisiable(bool visiable);
         
-        void SetLocation(float3 NewLocation);
+        void SetLocation(const float3& NewLocation);
 
 	protected:
-
         Mesh* RenderElement;
-        float3 Location;
 
 		bool Visiable;
 	};
