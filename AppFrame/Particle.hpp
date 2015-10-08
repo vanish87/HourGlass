@@ -33,6 +33,9 @@ namespace Physics {
         virtual void Render();
         
         void ApplyForce(const float3& Force_);
+
+		void SetLocation(const float3& NewLocation);
+		void SetScale(const float3& NewScale);
         
     protected:
 		float3 Location;//physics location that differs from render element's

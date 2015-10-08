@@ -13,14 +13,7 @@
 
 class MainLoopThread:public Tool::Thread
 {
-public:
-    
-    struct Para
-    {
-        int in;
-        int ret;
-    };
-    
+public:    
     Tool::ReturnCode Main(void* para);
 };
 #endif /* MainLoopThread_hpp */

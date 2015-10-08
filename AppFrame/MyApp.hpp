@@ -12,52 +12,22 @@
 #include "App.hpp"
 #include "Particle.hpp"
 
-
-
 class MyApp: public Engine::App
 {
 public:
-    MyApp():App(){};
-    virtual ~MyApp(){};
+    MyApp():App();
+    virtual ~MyApp();
     
     //Do main context init staffs
-    virtual Tool::ReturnCode Init()
-    {
-        App::Init();
-        
-        NewP.Create(CUBE);
-        NewP.AddToScene();
-        NewP.SetLocation(float3(0,1,5));
-        
-        
-        NewP.Create(SPHERE);
-        //NewP1.AddToScene();
-        NewP1.SetLocation(float3(2,-1,5));
-        
-        NewPlane.Create(PLANE);
-        NewPlane.AddToScene();
-        NewPlane.SetLocation(float3(0,-1,0));
-
-        return Tool::Success();
-    };
+    virtual Tool::ReturnCode Init();
     //Deinit staffs
-    virtual Tool::ReturnCode Deinit()
-    {
-        App::Deinit();
-        return Tool::Success();
-    };
+    virtual Tool::ReturnCode Deinit();
     //User update
-    virtual Tool::ReturnCode Update()
-    {
-        App::Update();
-        return Tool::Success();
-    };
+    virtual Tool::ReturnCode Update();
     
 private:
-    
-    Physics::Particle NewP;
-    Physics::Particle NewP1;
-    Physics::Particle NewPlane;
+	static const int NUMBER_OF_PARTICLES = 5000;
+    std::array<Physics::Particle, NUMBER_OF_PARTICLES> ParticlePool;
     
 };
 

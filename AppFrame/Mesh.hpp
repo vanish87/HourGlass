@@ -22,9 +22,11 @@ namespace Engine
     public:
         Mesh(MeshType Type = CUBE, float3 Location = float3(0,0,0));
         virtual ~Mesh();
-        
-        void SetLocation(const float3& NewLocation);
-        float3 GetLocation();
+
+		void SetLocation(const float3& NewLocation);
+		void SetScale(const float3& NewScale);
+		float3 GetLocation() const ;
+		float3 GetScale() const ;
         void* GetRawData();
         
 	private:

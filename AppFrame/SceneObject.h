@@ -27,8 +27,6 @@ namespace Engine
 		bool IsVisiable();
 		void SetVisiable(bool visiable);
         
-        void SetLocation(const float3& NewLocation);
-
 	protected:
         Mesh* RenderElement;
 

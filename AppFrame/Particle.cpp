@@ -38,10 +38,8 @@ namespace Physics
         
         
         this->RenderElement->SetLocation( this->Location);
-        
-        this->Acceleration = float3(0,0,0);
 
-		this->RenderElement->SetLocation(this->Location);
+		this->Acceleration = float3(0, 0, 0);
     };
     void Particle::Render()
     {
@@ -54,4 +52,14 @@ namespace Physics
         float3 NewAcc = Force_ / this->Mass;
         this->Acceleration = this->Acceleration + NewAcc;
     }
+
+
+	void Particle::SetLocation(const float3& NewLocation)
+	{
+		this->RenderElement->SetLocation(NewLocation);
+	}
+	void Particle::SetScale(const float3& NewScale)
+	{
+		this->RenderElement->SetScale(NewScale);
+	}
 }
