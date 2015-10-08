@@ -53,6 +53,19 @@ void Graphics_GetLocation(void* MeshData, float* x, float* y, float* z)
     }
 }
 
+void Graphics_GetScale(void* MeshData, float* x, float* y, float* z)
+{
+	if (MeshData != nullptr)
+	{
+		Engine::Mesh* MeshPtr = static_cast<Engine::Mesh*>(MeshData);
+		Engine::float3 Loc = MeshPtr->GetScale();
+
+		*x = Loc.x();
+		*y = Loc.y();
+		*z = Loc.z();
+	}
+}
+
 unsigned long Graphics_GetNumberOfMeshes()
 {
     std::vector<Engine::Mesh*>& RenderData = Context::Instance().GetSceneManager().GetRenderList();

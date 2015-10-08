@@ -19,7 +19,7 @@
 static NSUInteger kMaxInflightBuffers = 3;
 
 // Max API memory buffer size.
-static const size_t kMaxBytesPerFrame = 1024*1024;
+static const size_t kMaxBytesPerFrame = 1024*1024*16;
 
 
 id <MTLDevice> _device;
@@ -109,7 +109,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         }
         case SPHERE:
         {
-            MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){1,1,0.1}
+            MDLMesh *mdl = [MDLMesh newEllipsoidWithRadii:(vector_float3){1,1,1}
                                     radialSegments:5
                                     verticalSegments:5
                                     geometryType:MDLGeometryTypeTriangles
@@ -122,7 +122,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         }
         case PLANE:
         {
-            MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){5,5}
+            MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){1,1}
                                     segments:(vector_uint2){5,5}
                                     geometryType:MDLGeometryTypeTriangles
                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
@@ -240,13 +240,6 @@ void* Graphics_CreateMesh(enum MeshType Type)
 
     if(renderPassDescriptor != nil) // If we have a valid drawable, begin the commands to render into it
     {
-        //lock
-        //if not empty
-        //getdata
-        //render
-        //unlock
-        
-        
         Graphics_LockRenderQueue();
         
         if(!Graphics_IsRenderQueueEmpty())
@@ -259,13 +252,9 @@ void* Graphics_CreateMesh(enum MeshType Type)
             [renderEncoder setDepthStencilState:_depthState];
             
             while (!Graphics_IsRenderQueueEmpty())
-            {
-                
-                
-                void* MeshData = Graphics_PopAndGetMeshData();
-                
-                _boxMesh = (__bridge MTKMesh*)Graphics_GetRawData(MeshData);
-                
+            {              
+                void* MeshData = Graphics_PopAndGetMeshData();                
+                _boxMesh = (__bridge MTKMesh*)Graphics_GetRawData(MeshData);                
                 
                 if (_boxMesh != nil)
                 {
@@ -277,9 +266,13 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     float x = 0;
                     float y = 0;
                     float z = 0;
+                    float xSacle = 1;
+                    float ySacle = 1;
+                    float zSacle = 1;
                     Graphics_GetLocation(MeshData, &x, &y, &z);
+                    Graphics_GetScale(MeshData, &xSacle, &ySacle, &zSacle);
                     
-                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
+                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f), matrix_from_scale(xSacle,ySacle,zSacle));
                     matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
                     matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(0, 1.0f, 1.0f, 1.0f));
                     
@@ -289,10 +282,8 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
                     uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
                     
-                    [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t)*BufferCount) atIndex:1 ];
-                    
-                    BufferCount++;
-                    
+                    [renderEncoder setVertexBuffer:_dynamicConstantBuffer offset:(sizeof(uniforms_t)*BufferCount) atIndex:1 ];                    
+                    BufferCount++;                    
                     MTKSubmesh* submesh = _boxMesh.submeshes[0];
                     // Tell the render context we want to draw our primitives
                     [renderEncoder drawIndexedPrimitives:submesh.primitiveType indexCount:submesh.indexCount indexType:submesh.indexType indexBuffer:submesh.indexBuffer.buffer indexBufferOffset:submesh.indexBuffer.offset];
@@ -301,14 +292,9 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     
                 }
                 
-            }
-            
-            
+            }            
             // We're done encoding commands
             [renderEncoder endEncoding];
-            
-            // The render assumes it can now increment the buffer index and that the previous index won't be touched until we cycle back around to the same index
-            //_constantDataBufferIndex = (_constantDataBufferIndex + 1) % kMaxInflightBuffers;
         }
         
         Graphics_UnlockRenderQueue();
@@ -323,46 +309,61 @@ void* Graphics_CreateMesh(enum MeshType Type)
     }
 }
 
+matrix_float4x4 lookAt(		const float * const pEye,
+                            const float * const pCenter,
+                            const float * const pUp)
+{
+   
+matrix_float4x4 lookAt	(   const simd::float3& eye,
+                            const simd::float3& center,
+                            const simd::float3& up)
+{
+    simd::float3 zAxis = simd::normalize(center - eye);
+    simd::float3 xAxis = simd::normalize(simd::cross(up, zAxis));
+    simd::float3 yAxis = simd::cross(zAxis, xAxis);
+    
+    simd::float4 P;
+    simd::float4 Q;
+    simd::float4 R;
+    simd::float4 S;
+    
+    P.x = xAxis.x;
+    P.y = yAxis.x;
+    P.z = zAxis.x;
+    P.w = 0.0f;
+    
+    Q.x = xAxis.y;
+    Q.y = yAxis.y;
+    Q.z = zAxis.y;
+    Q.w = 0.0f;
+    
+    R.x = xAxis.z;
+    R.y = yAxis.z;
+    R.z = zAxis.z;
+    R.w = 0.0f;
+    
+    S.x = -simd::dot(xAxis, eye);
+    S.y = -simd::dot(yAxis, eye);
+    S.z = -simd::dot(zAxis, eye);
+    S.w =  1.0f;
+    
+    return simd::float4x4(P, Q, R, S);
+} // lookAt
+} // lookAt
+
 - (void)_reshape
 {
     // When reshape is called, update the view and projection matricies since this means the view orientation or size changed
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
     
-    _viewMatrix = matrix_identity_float4x4;
+
+    _viewMatrix = lookAt();
 }
 
 - (void)_update
 {
-    return;
-    if(_constantDataBufferIndex == 0 && false)
-    {
-        float newRoattion = 1;
-        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(newRoattion, 0.0f, 1.0f, 0.0f));
-        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
-        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(newRoattion, 1.0f, 1.0f, 1.0f));
-        
-        // Load constant buffer data into appropriate buffer at current index
-        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[_constantDataBufferIndex];
-        
-        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
-        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
-        //_rotation += 0.01f;
-    
-    }
-    else{
-        
-        matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(0.0f, 0.0f, 5.0f), matrix_from_rotation(_rotation, 0.0f, 1.0f, 0.0f));
-        matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
-        matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(_rotation, 1.0f, 1.0f, 1.0f));
-        
-        // Load constant buffer data into appropriate buffer at current index
-        uniforms_t *uniforms = &((uniforms_t *)[_dynamicConstantBuffer contents])[1];
-        
-        uniforms->normal_matrix = matrix_invert(matrix_transpose(modelViewMatrix));
-        uniforms->modelview_projection_matrix = matrix_multiply(_projectionMatrix, modelViewMatrix);
-        _rotation += 0.01f;
-    }
+
 }
 
 // Called whenever view changes orientation or layout is changed
@@ -402,6 +403,14 @@ static matrix_float4x4 matrix_from_translation(float x, float y, float z)
 {
     matrix_float4x4 m = matrix_identity_float4x4;
     m.columns[3] = (vector_float4) { x, y, z, 1.0 };
+    return m;
+}
+static matrix_float4x4 matrix_from_scale(float x, float y, float z)
+{
+	matrix_float4x4 m = matrix_identity_float4x4;
+    m[0][0] = x;
+    m[1][1] = y;
+    m[2][2] = z;
     return m;
 }
 
