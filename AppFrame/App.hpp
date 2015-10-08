@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "ReturnCode.hpp"
+#include "MainLoopThread.hpp"
 
 using namespace Tool;
 
@@ -18,18 +19,25 @@ namespace Engine {
     class App
     {
     public:
-        App();
-        virtual ~App();
+        App(){};
+        virtual ~App(){};
         
         //Do main context init staffs
-        virtual ReturnCode Init();
+        virtual ReturnCode Init(){return Success();};
         //Deinit staffs
-        virtual ReturnCode Deinit();
+        virtual ReturnCode Deinit(){return Success();};
         //User update
-        virtual ReturnCode Update();
+        virtual ReturnCode Update(){return Success();};
         
         //main loop entry
-        ReturnCode Run();
+        ReturnCode Run()
+        {
+            return MainLoop.Create();
+        };
+        
+        
+    private:
+        MainLoopThread MainLoop;
         
     };
 }

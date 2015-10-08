@@ -7,11 +7,12 @@
 //
 
 #include "MainLoop_Bridge.h"
-#include "MainLoopThread.hpp"
+#include "MyApp.hpp"
 
-static MainLoopThread GameLoop;
+static MyApp GlobalGame;
 
 void MainLoopBridge_StartGameLoop(void)
 {
-    GameLoop.Create();
+    GlobalGame.Init();
+    GlobalGame.Run();
 }

@@ -9,12 +9,8 @@
 #ifndef Graphics_Bridge_hpp
 #define Graphics_Bridge_hpp
 
-enum MeshType
-{
-    CUBE,
-    SPHERE,
-    PLANE,
-};
+#include "SharedDataType.h"
+
 
 #ifdef __cplusplus
 extern "C" {

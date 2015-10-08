@@ -11,10 +11,14 @@
 
 //#include <vector_types.h>
 #include <stdint.h>
+#include "SharedDataType.h"
+namespace Tool
+{
+    class ReturnCode;
+};
 
 namespace Engine {
     
-    class ReturnCode;
     class SceneManager;
     class Mesh;
     

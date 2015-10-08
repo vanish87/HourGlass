@@ -9,18 +9,26 @@
 #include "Particle.hpp"
 #include "Graphics_Bridge.hpp"
 #include "Mesh.hpp"
+#include "ReturnCode.hpp"
+
+using namespace Tool;
 
 namespace Physics
 {
     
-    Particle::Particle(MeshType Type)
-    :SceneObject::SceneObject()
+    Particle::Particle()
+        :SceneObject::SceneObject()
+    {
+    }
+    ReturnCode Particle::Create(MeshType Type)
     {
         this->RenderElement = new Mesh(Type);
+        return Success();
     };
     Particle::~Particle()
     {
-        
+        delete this->RenderElement;
+        this->RenderElement = nullptr;
     };
     
     void Particle::Update()

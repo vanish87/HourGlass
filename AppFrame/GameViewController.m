@@ -61,7 +61,7 @@ id <MTLDevice> _device;
     MainLoopBridge_StartGameLoop();
     
     _constantDataBufferIndex = 0;
-    _inflight_semaphore = dispatch_semaphore_create(3);
+    _inflight_semaphore = dispatch_semaphore_create(kMaxInflightBuffers);
     
     [self _setupMetal];
     [self _setupView];
@@ -300,9 +300,6 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     [renderEncoder popDebugGroup];
                     
                 }
-                
-                
-                
                 
             }
             

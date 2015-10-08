@@ -25,7 +25,8 @@ namespace Physics {
     class Particle : public Engine::SceneObject
     {
     public:
-        Particle(MeshType Type = SPHERE);
+        Particle();
+        Tool::ReturnCode Create(MeshType Type = SPHERE);
         virtual ~Particle();
         
         virtual void Update();

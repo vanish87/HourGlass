@@ -35,18 +35,7 @@ Tool::ReturnCode MainLoopThread::Main(void* para)
     duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
     
     
-    Physics::Particle NewP(CUBE);
-    NewP.AddToScene();
-    NewP.SetLocation(float3(0,1,5));
-    
-    Physics::Particle NewP1(SPHERE);
-    //NewP1.AddToScene();
-    NewP1.SetLocation(float3(2,-1,5));
-    
-    Physics::Particle NewPlane(PLANE);
-    NewPlane.AddToScene();
-    NewPlane.SetLocation(float3(0,-1,0));
-    
+        
     std::clock_t previous = std::clock();
     double lag = 0.0;
     while (true)

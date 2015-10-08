@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC59919E1BC17B8600336A88 /* MyApp.cpp */; settings = {ASSET_TAGS = (); }; };
 		BCDAC7761BADA55F00F05156 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCDAC7751BADA55F00F05156 /* AppDelegate.m */; };
 		BCDAC77F1BADA55F00F05156 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BCDAC77D1BADA55F00F05156 /* Main.storyboard */; };
 		BCDAC7811BADA55F00F05156 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCDAC7801BADA55F00F05156 /* Assets.xcassets */; };
@@ -50,6 +51,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC59919E1BC17B8600336A88 /* MyApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MyApp.cpp; sourceTree = "<group>"; };
+		BC59919F1BC17B8600336A88 /* MyApp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MyApp.hpp; sourceTree = "<group>"; };
+		BC5991A11BC17FE200336A88 /* SharedDataType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedDataType.h; sourceTree = "<group>"; };
 		BCDAC76E1BADA55F00F05156 /* AppFrame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppFrame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCDAC7721BADA55F00F05156 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		BCDAC7741BADA55F00F05156 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -202,6 +206,8 @@
 		BCE33B1A1BAEA8650058338C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BC59919E1BC17B8600336A88 /* MyApp.cpp */,
+				BC59919F1BC17B8600336A88 /* MyApp.hpp */,
 				BCE33B1B1BAEA8920058338C /* App.cpp */,
 				BCE33B1C1BAEA8920058338C /* App.hpp */,
 			);
@@ -211,6 +217,7 @@
 		BCE33B1E1BAEA9190058338C /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				BC5991A11BC17FE200336A88 /* SharedDataType.h */,
 				BCE33BFD1BBA6FC20058338C /* Vector.h */,
 				BCE33B221BAEA99C0058338C /* PreDeclear.h */,
 				BCE33B1F1BAEA94A0058338C /* ReturnCode.cpp */,
@@ -394,6 +401,7 @@
 				BCE33BFC1BBA6E740058338C /* Particle.cpp in Sources */,
 				BCE33B211BAEA94A0058338C /* ReturnCode.cpp in Sources */,
 				BCE33C131BBA91FB0058338C /* Context.cpp in Sources */,
+				BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */,
 				BCE33BE61BB922780058338C /* Thread.cpp in Sources */,
 				BCE33B1D1BAEA8920058338C /* App.cpp in Sources */,
 				BCE33B281BAEB5960058338C /* GameViewController.m in Sources */,
