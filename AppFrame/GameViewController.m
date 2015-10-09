@@ -272,7 +272,8 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     Graphics_GetLocation(MeshData, &x, &y, &z);
                     Graphics_GetScale(MeshData, &xSacle, &ySacle, &zSacle);
                     
-                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f), matrix_from_scale(xSacle,ySacle,zSacle));
+                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
+                    base_model = matrix_multiply(base_model , matrix_from_scale(xSacle,ySacle,zSacle));
                     matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
                     matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(0, 1.0f, 1.0f, 1.0f));
                     
@@ -309,12 +310,8 @@ void* Graphics_CreateMesh(enum MeshType Type)
     }
 }
 
-matrix_float4x4 lookAt(		const float * const pEye,
-                            const float * const pCenter,
-                            const float * const pUp)
-{
    
-matrix_float4x4 lookAt	(   const simd::float3& eye,
+/*matrix_float4x4 lookAt	(   const simd::float3& eye,
                             const simd::float3& center,
                             const simd::float3& up)
 {
@@ -348,8 +345,7 @@ matrix_float4x4 lookAt	(   const simd::float3& eye,
     S.w =  1.0f;
     
     return simd::float4x4(P, Q, R, S);
-} // lookAt
-} // lookAt
+} // lookAt*/
 
 - (void)_reshape
 {
@@ -358,7 +354,7 @@ matrix_float4x4 lookAt	(   const simd::float3& eye,
     _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
     
 
-    _viewMatrix = lookAt();
+    //_viewMatrix = lookAt();
 }
 
 - (void)_update
@@ -408,9 +404,9 @@ static matrix_float4x4 matrix_from_translation(float x, float y, float z)
 static matrix_float4x4 matrix_from_scale(float x, float y, float z)
 {
 	matrix_float4x4 m = matrix_identity_float4x4;
-    m[0][0] = x;
-    m[1][1] = y;
-    m[2][2] = z;
+    m.columns[0][0] = x;
+    m.columns[1][1] = y;
+    m.columns[2][2] = z;
     return m;
 }
 

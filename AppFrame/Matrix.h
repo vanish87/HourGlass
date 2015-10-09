@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Vector.h"
+#include "Math.h"
 
 namespace Engine
 {

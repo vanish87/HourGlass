@@ -15,7 +15,7 @@
 class MyApp: public Engine::App
 {
 public:
-    MyApp():App();
+    MyApp();
     virtual ~MyApp();
     
     //Do main context init staffs

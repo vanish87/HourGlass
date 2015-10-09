@@ -5,7 +5,7 @@
 namespace Engine
 {
 	SceneObject::SceneObject(void)
-    :Location(float3(0,0,0)), Visiable(true)
+    : Visiable(true)
 	{
 	}
 

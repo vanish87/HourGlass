@@ -17,7 +17,7 @@ extern "C" {
 #endif
 void* Graphics_CreateMesh(enum MeshType Type);
 void  Graphics_GetLocation(void* MeshData, float* x, float* y, float* z);
-void  Graphics_GetScale(void* MeshData, float* x, float* y, float* z)
+void  Graphics_GetScale(void* MeshData, float* x, float* y, float* z);
 void* Graphics_GetRawData(void* MeshData);
 
 

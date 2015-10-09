@@ -5,6 +5,8 @@
 
 
 #include "PreDeclear.h"
+#include <cmath>
+#include <algorithm>
 
 namespace Engine
 {

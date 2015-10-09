@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "PreDec.h"
+#include "PreDeclear.h"
 
 namespace Engine
 {
@@ -98,8 +98,8 @@ namespace Engine
 		template <typename T>
 		T Clamp(const T& value, const T& min,const T& max );
 
-		bool IntersectRayAABB(Ray* ray, AABBox* aabb);
-		bool IntersectRayTriangle(Ray* ray, float3 a, float3 b, float3 c, float & t);
+		//bool IntersectRayAABB(Ray* ray, AABBox* aabb);
+		//bool IntersectRayTriangle(Ray* ray, float3 a, float3 b, float3 c, float & t);
 	}
 
 }

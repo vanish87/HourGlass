@@ -21,7 +21,7 @@ MyApp::~MyApp()
 Tool::ReturnCode MyApp::Init()
 {
 	App::Init();
-	for (std::array<Particle>::iterator it = this->ParticlePool.begin();
+    for (std::array<Physics::Particle, MyApp::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
 			it != this->ParticlePool.end();
 			++it)
 	{
