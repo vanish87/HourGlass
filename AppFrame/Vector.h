@@ -194,6 +194,12 @@ namespace Engine
 			return Vec3(vec_[0] - rhs.x() , vec_[1] - rhs.y() , vec_[2] - rhs.z());
 		}
 
+		template <typename S>
+		Vec3 operator*(const Vec3<S> & rhs) const
+		{
+			return Vec3(vec_[0] * rhs.x(), vec_[1] * rhs.y(), vec_[2] * rhs.z());
+		}
+
 		Vec3 operator*(const T & rhs) const
 		{ 
 			return Vec3(vec_[0] * rhs , vec_[1] * rhs , vec_[2] * rhs);

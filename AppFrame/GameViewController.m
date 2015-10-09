@@ -10,6 +10,7 @@
 #import "SharedStructures.h"
 #import "MainLoop_Bridge.h"
 #import "Graphics_Bridge.hpp"
+#import "matrix_types.h"
 
 @import simd;
 @import ModelIO;
@@ -311,7 +312,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
 }
 
    
-/*matrix_float4x4 lookAt	(   const simd::float3& eye,
+simd::float4x4 lookAt	(   const simd::float3& eye,
                             const simd::float3& center,
                             const simd::float3& up)
 {
@@ -345,7 +346,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
     S.w =  1.0f;
     
     return simd::float4x4(P, Q, R, S);
-} // lookAt*/
+} // lookAt
 
 - (void)_reshape
 {
@@ -353,8 +354,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
     
-
-    //_viewMatrix = lookAt();
+    _viewMatrix = lookAt({0, 0, 1}, {0, 0, -1}, {0, 1, 0});
 }
 
 - (void)_update

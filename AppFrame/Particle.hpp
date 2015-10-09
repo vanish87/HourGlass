@@ -19,7 +19,6 @@ using namespace Engine;
 
 extern float MS_PER_UPDATE;
 
-
 namespace Physics {
     
     class Particle : public Engine::SceneObject
@@ -36,6 +35,12 @@ namespace Physics {
 
 		void SetLocation(const float3& NewLocation);
 		void SetScale(const float3& NewScale);
+
+		const float GetMass() const;
+		void  SetMass(const float& NewMass);
+
+
+		const float3 GetVelocity() const;
         
     protected:
 		float3 Location;//physics location that differs from render element's

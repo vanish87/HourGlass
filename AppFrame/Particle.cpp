@@ -17,7 +17,8 @@ namespace Physics
 {
     
     Particle::Particle()
-        :SceneObject::SceneObject()
+        :SceneObject::SceneObject(),
+		Location(float3(0,0,0)), Velocity(float3(0,0,0)),Acceleration(float3(0,0,0)),Mass(1)
     {
     }
     ReturnCode Particle::Create(MeshType Type)
@@ -61,5 +62,17 @@ namespace Physics
 	void Particle::SetScale(const float3& NewScale)
 	{
 		this->RenderElement->SetScale(NewScale);
+	}
+	const float Particle::GetMass() const
+	{
+		return this->Mass;
+	}
+	void Particle::SetMass(const float & NewMass)
+	{
+		this->Mass = NewMass;
+	}
+	const float3 Particle::GetVelocity() const
+	{
+		return this->Velocity;
 	}
 }

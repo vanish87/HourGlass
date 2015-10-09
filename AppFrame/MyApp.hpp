@@ -10,7 +10,7 @@
 #define MyApp_hpp
 
 #include "App.hpp"
-#include "Particle.hpp"
+#include "Sandsimulator.hpp"
 
 class MyApp: public Engine::App
 {
@@ -26,9 +26,7 @@ public:
     virtual Tool::ReturnCode Update();
     
 private:
-	static const int NUMBER_OF_PARTICLES = 5000;
-    std::array<Physics::Particle, NUMBER_OF_PARTICLES> ParticlePool;
-    
+	SandSimulator SandSim;
 };
 
 #endif /* MyApp_hpp */
