@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC2902E01BCA60FF00905E14 /* SandSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902DE1BCA60FF00905E14 /* SandSimulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC59919E1BC17B8600336A88 /* MyApp.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC5991A61BC7483E00336A88 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC5991A21BC7483E00336A88 /* Math.cpp */; settings = {ASSET_TAGS = (); }; };
 		BCDAC7761BADA55F00F05156 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCDAC7751BADA55F00F05156 /* AppDelegate.m */; };
@@ -52,6 +53,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC2902DE1BCA60FF00905E14 /* SandSimulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SandSimulator.cpp; sourceTree = "<group>"; };
+		BC2902DF1BCA60FF00905E14 /* Sandsimulator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Sandsimulator.hpp; sourceTree = "<group>"; };
 		BC59919E1BC17B8600336A88 /* MyApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MyApp.cpp; sourceTree = "<group>"; };
 		BC59919F1BC17B8600336A88 /* MyApp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MyApp.hpp; sourceTree = "<group>"; };
 		BC5991A11BC17FE200336A88 /* SharedDataType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedDataType.h; sourceTree = "<group>"; };
@@ -211,6 +214,8 @@
 		BCE33B1A1BAEA8650058338C /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BC2902DE1BCA60FF00905E14 /* SandSimulator.cpp */,
+				BC2902DF1BCA60FF00905E14 /* Sandsimulator.hpp */,
 				BC59919E1BC17B8600336A88 /* MyApp.cpp */,
 				BC59919F1BC17B8600336A88 /* MyApp.hpp */,
 				BCE33B1B1BAEA8920058338C /* App.cpp */,
@@ -409,6 +414,7 @@
 				BCDAC7761BADA55F00F05156 /* AppDelegate.m in Sources */,
 				BCE33BFC1BBA6E740058338C /* Particle.cpp in Sources */,
 				BCE33B211BAEA94A0058338C /* ReturnCode.cpp in Sources */,
+				BC2902E01BCA60FF00905E14 /* SandSimulator.cpp in Sources */,
 				BCE33C131BBA91FB0058338C /* Context.cpp in Sources */,
 				BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */,
 				BCE33BE61BB922780058338C /* Thread.cpp in Sources */,

@@ -8,6 +8,8 @@
 
 #include "MyApp.hpp"
 
+using namespace Engine;
+
 MyApp::MyApp()
 	:App() 
 {
@@ -21,20 +23,14 @@ MyApp::~MyApp()
 Tool::ReturnCode MyApp::Init()
 {
 	App::Init();
-    for (std::array<Physics::Particle, MyApp::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
-			it != this->ParticlePool.end();
-			++it)
-	{
-		it->Create(CUBE);
-		it->AddToScene();
-		it->SetLocation(float3(0, 1, 0));
-	}
+    this->SandSim.Init();
 
 	return Tool::Success();
 };
 //Deinit staffs
 Tool::ReturnCode MyApp::Deinit()
 {
+    this->SandSim.Deinit();
 	App::Deinit();
 	return Tool::Success();
 };
@@ -42,5 +38,6 @@ Tool::ReturnCode MyApp::Deinit()
 Tool::ReturnCode MyApp::Update()
 {
 	App::Update();
+    //this->SandSim.Update();
 	return Tool::Success();
 };

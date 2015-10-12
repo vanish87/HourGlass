@@ -25,11 +25,12 @@ public:
     //User update
     Tool::ReturnCode Update();
     
+    static const uint				NUMBER_OF_PARTICLES = 5;
+    static const Engine::float3		GRAVITY_CONSTANT;
+    static const Engine::float3		FRICTION_CONSTANT;
+    
 private:
-	static const int				NUMBER_OF_PARTICLES;
-	static const Engine::float3		GRAVITY_CONSTANT;
-	static const Engine::float3		FRICTION_CONSTANT;
-    std::array<Physics::Particle, NUMBER_OF_PARTICLES> ParticlePool;
+    std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
     
 };
 

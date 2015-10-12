@@ -10,9 +10,9 @@
 #import "SharedStructures.h"
 #import "MainLoop_Bridge.h"
 #import "Graphics_Bridge.hpp"
-#import "matrix_types.h"
+#import <simd/simd.h>
 
-@import simd;
+//@import simd;
 @import ModelIO;
 
 // The max number of command buffers in flight
@@ -59,7 +59,6 @@ id <MTLDevice> _device;
 {
     [super viewDidLoad];
     
-    MainLoopBridge_StartGameLoop();
     
     _constantDataBufferIndex = 0;
     _inflight_semaphore = dispatch_semaphore_create(kMaxInflightBuffers);
@@ -68,6 +67,8 @@ id <MTLDevice> _device;
     [self _setupView];
     [self _loadAssets];
     [self _reshape];
+    
+    MainLoopBridge_StartGameLoop();
 }
 
 - (void)_setupView
@@ -311,8 +312,11 @@ void* Graphics_CreateMesh(enum MeshType Type)
     }
 }
 
+/*static simd::float4x4 lookAt(   const simd::float3& eye,
+                             const simd::float3& center,
+                             const simd::float3& up);
    
-simd::float4x4 lookAt	(   const simd::float3& eye,
+static simd::float4x4 lookAt(   const simd::float3& eye,
                             const simd::float3& center,
                             const simd::float3& up)
 {
@@ -346,7 +350,7 @@ simd::float4x4 lookAt	(   const simd::float3& eye,
     S.w =  1.0f;
     
     return simd::float4x4(P, Q, R, S);
-} // lookAt
+} // lookAt*/
 
 - (void)_reshape
 {
@@ -354,7 +358,8 @@ simd::float4x4 lookAt	(   const simd::float3& eye,
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
     
-    _viewMatrix = lookAt({0, 0, 1}, {0, 0, -1}, {0, 1, 0});
+    _viewMatrix = matrix_identity_float4x4;
+    //_viewMatrix = lookAt({0, 0, 1}, {0, 0, -1}, {0, 1, 0});
 }
 
 - (void)_update

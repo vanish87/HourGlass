@@ -20,7 +20,7 @@ namespace Physics
         :SceneObject::SceneObject(),
 		Location(float3(0,0,0)), Velocity(float3(0,0,0)),Acceleration(float3(0,0,0)),Mass(1)
     {
-    }
+    };
     ReturnCode Particle::Create(MeshType Type)
     {
         this->RenderElement = new Mesh(Type);

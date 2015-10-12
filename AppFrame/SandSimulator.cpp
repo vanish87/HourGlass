@@ -8,12 +8,13 @@
 
 #include "SandSimulator.hpp"
 #include "Vector.h"
+#include "ReturnCode.hpp"
 
 using namespace Engine;
 
-static const int SandSimulator::NUMBER_OF_PARTICLES = 5000;
-static const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, 0.98, 0);
-static const float3 SandSimulator::FRICTION_CONSTANT = float3(0, 0.01, 0);
+
+const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, 0.98, 0);
+const float3 SandSimulator::FRICTION_CONSTANT = float3(0, 0.01, 0);
 
 SandSimulator::SandSimulator()
 {
@@ -33,6 +34,7 @@ Tool::ReturnCode SandSimulator::Init()
 		it->Create(CUBE);
 		it->AddToScene();
 		it->SetLocation(float3(0, 1, 0));
+        it->SetScale(float3(0.1,0.1,0.1));
 	}
 
 	return Tool::Success();
