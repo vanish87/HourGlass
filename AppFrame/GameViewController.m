@@ -274,8 +274,10 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     Graphics_GetLocation(MeshData, &x, &y, &z);
                     Graphics_GetScale(MeshData, &xSacle, &ySacle, &zSacle);
                     
-                    matrix_float4x4 base_model = matrix_multiply(matrix_from_translation(x, y, z), matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
+                    matrix_float4x4 base_model = matrix_identity_float4x4;
                     base_model = matrix_multiply(base_model , matrix_from_scale(xSacle,ySacle,zSacle));
+					base_model = matrix_multiply(base_model , matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
+					base_model = matrix_multiply(base_model , matrix_from_translation(x, y, z));
                     matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
                     matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(0, 1.0f, 1.0f, 1.0f));
                     
