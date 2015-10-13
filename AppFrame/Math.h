@@ -30,6 +30,9 @@ namespace Engine
 		float Cot(float x);
 		float InvSqrt(float number);
 
+		float Ln(float x);
+		float Pow(float base, float exp);
+
 		template <typename T>
 		T Min(T& lhs, T& rhs);
 		template <typename T>

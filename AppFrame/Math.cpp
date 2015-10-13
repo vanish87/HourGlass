@@ -51,6 +51,16 @@ namespace Engine
 
 			return number;
 		}
+
+		float Ln(float x)
+		{
+			return std::log(x);
+		}
+
+		float Pow(float base, float exp)
+		{
+			return pow(base, exp);
+		}
 /*
 
 		bool IntersectRayAABB( Ray* ray, AABBox* aabb )

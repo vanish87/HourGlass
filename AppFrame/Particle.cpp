@@ -79,9 +79,4 @@ namespace Physics
 	{
 		return this->Velocity;
 	}
-	Tool::ReturnCode Particle::HandleCollisionWith(Particle & Target)
-	{
-
-		return Tool::Success();
-	}
 }

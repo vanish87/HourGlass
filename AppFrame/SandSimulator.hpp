@@ -34,6 +34,12 @@ public:
 private:
 	Tool::ReturnCode UpdateSpatialHash();
 	Tool::ReturnCode CheckDection(Physics::Particle& PaticleIn, std::list<Physics::Particle*>& Cadidates);
+	Tool::ReturnCode HandleCollisionWith(Physics::Particle & Target1, Physics::Particle & Target2);
+
+	float GetKd(float MassEff = 0, float TimeContact = 1);
+	float GetKr(float MassEff = 0, float TimeContact = 1);
+	float GetKd(float3 T1, float3 T2);
+	float GetKr(float3 T1, float3 T2);
 
     std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
 
