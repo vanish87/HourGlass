@@ -10,6 +10,8 @@
 #define SandSimulator_hpp
 
 #include "PreDeclear.h"
+#include <unordered_map>
+#include <list>
 #include "Particle.hpp"
 
 class SandSimulator
@@ -30,7 +32,13 @@ public:
     static const Engine::float3		FRICTION_CONSTANT;
     
 private:
+	Tool::ReturnCode UpdateSpatialHash();
+	Tool::ReturnCode CheckDection(Physics::Particle& PaticleIn, std::list<Physics::Particle*>& Cadidates);
+
     std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
+
+	static const uint				VOXEL_CELL_SIZE;
+	std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<Physics::Particle*>>>> SpatialHash;
     
 };
 

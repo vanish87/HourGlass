@@ -101,7 +101,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         case CUBE:
         {
             MDLMesh *mdl = [MDLMesh newBoxWithDimensions:(vector_float3){1,1,1}
-                                                segments:(vector_uint3){1,1,1}
+                                                segments:(vector_uint3){2,2,2}
                                                 geometryType:MDLGeometryTypeTriangles
                                                 inwardNormals:NO
                                                 allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
@@ -125,7 +125,7 @@ void* Graphics_CreateMesh(enum MeshType Type)
         case PLANE:
         {
             MDLMesh *mdl = [MDLMesh newPlaneWithDimensions:(vector_float2){1,1}
-                                    segments:(vector_uint2){5,5}
+                                    segments:(vector_uint2){2,2}
                                     geometryType:MDLGeometryTypeTriangles
                                     allocator:[[MTKMeshBufferAllocator alloc] initWithDevice: _device]];
             

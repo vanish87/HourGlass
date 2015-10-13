@@ -34,6 +34,7 @@ namespace Physics {
         void ApplyForce(const float3& Force_);
 
 		void SetLocation(const float3& NewLocation);
+		const float3 GetLocation() const;
 		void SetScale(const float3& NewScale);
 
 		const float GetMass() const;
@@ -41,6 +42,8 @@ namespace Physics {
 
 
 		const float3 GetVelocity() const;
+
+		Tool::ReturnCode HandleCollisionWith(Particle& Target);
         
     protected:
 		float3 Location;//physics location that differs from render element's
@@ -48,6 +51,7 @@ namespace Physics {
         float3 Acceleration;
         
         float Mass;
+		float Radius;
         
         
     };
