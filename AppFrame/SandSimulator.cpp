@@ -28,11 +28,11 @@ SandSimulator::~SandSimulator()
 //Do main context init staffs
 Tool::ReturnCode SandSimulator::Init()
 {
-    for (std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
+    for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
 			it != this->ParticlePool.end();
 			++it)
 	{
-		it->Create(CUBE);
+		it->Create(SPHERE);
 		it->AddToScene();
 		it->SetLocation(float3(0, 1, 5));
         it->SetScale(float3(0.1,0.1,0.1));
@@ -50,7 +50,7 @@ Tool::ReturnCode SandSimulator::Update()
 {
 	this->UpdateSpatialHash();
 
-	for (std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
+	for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
 	it != this->ParticlePool.end();
 		++it)
 	{
@@ -65,7 +65,7 @@ Tool::ReturnCode SandSimulator::Update()
 }
 Tool::ReturnCode SandSimulator::UpdateSpatialHash()
 {
-	for (std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
+	for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
 		it != this->ParticlePool.end();
 		++it)
 	{
@@ -74,13 +74,13 @@ Tool::ReturnCode SandSimulator::UpdateSpatialHash()
 
 		const float3 Position = it->GetLocation();
 		const int3 HashId = Position / SandSimulator::VOXEL_CELL_SIZE;
-		std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<Physics::Particle*>>>>::iterator Xit = this->SpatialHash.find(HashId.x());
+		std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<SandParticle*>>>>::iterator Xit = this->SpatialHash.find(HashId.x());
 		if (Xit != this->SpatialHash.end())
 		{
-			std::unordered_map<int, std::unordered_map<int, std::list<Physics::Particle*>>>::iterator Yit = Xit->second.find(HashId.y());
+			std::unordered_map<int, std::unordered_map<int, std::list<SandParticle*>>>::iterator Yit = Xit->second.find(HashId.y());
 			if (Yit != Xit->second.end())
 			{
-				std::unordered_map<int, std::list<Physics::Particle*>>::iterator Zit = Yit->second.find(HashId.z());
+				std::unordered_map<int, std::list<SandParticle*>>::iterator Zit = Yit->second.find(HashId.z());
 				if (Zit != Yit->second.end())
 				{
 					this->CheckDection(*it, Zit->second);
@@ -105,54 +105,44 @@ Tool::ReturnCode SandSimulator::UpdateSpatialHash()
 	return Tool::Success();
 };
 
-Tool::ReturnCode SandSimulator::CheckDection(Physics::Particle& PaticleIn, std::list<Physics::Particle*>& Cadidates)
+Tool::ReturnCode SandSimulator::CheckDection(SandParticle& PaticleIn, std::list<SandParticle*>& Cadidates)
 {
-	for (std::list<Physics::Particle*>::iterator it = Cadidates.begin(); it != Cadidates.end(); ++it)
+	for (std::list<SandParticle*>::iterator it = Cadidates.begin(); it != Cadidates.end(); ++it)
 	{
 		this->HandleCollisionWith(PaticleIn, **it);
 	}
 	return Tool::Success();
 }
-Tool::ReturnCode SandSimulator::HandleCollisionWith(Physics::Particle & Target1, Physics::Particle & Target2)
+Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, SandParticle & Target2)
 {
 	//if contacted, apply contact force
-	float3 x1 = Target1.GetLocation();
-	float3 x2 = Target2.GetLocation();
-
+	//each sand particle has for sphere that centered on the points of tetrahedron
 	float m1 = Target1.GetMass();
 	float m2 = Target2.GetMass();
 
 	float3 v1 = Target1.GetVelocity();
 	float3 v2 = Target2.GetVelocity();
 
-	float Distance = Math::Dot(x1, x2);
-	//const radius 1
-	if (Distance <= 1)
+	for (int i = 0; i < SandParticle::NumberOfSphere; ++i)
 	{
-		float3 CenterVector = x2 - x1;
-		float3 Normal = Math::Normalize(CenterVector);
-		float Overlap = Math::Max((float)0.0, 2 - Math::Sqrt(Distance));
-		float Meff = (m1 * m2) / (m1 + m2);
-		//dissipation
-		float Kd = this->GetKd(Meff, MS_PER_UPDATE);
-		//stiffness
-		float Kr = this->GetKr(Meff, MS_PER_UPDATE);
+		float3 x1 = Target1.GetLocation() + Target1.TerahedronInstance.Position[i];
+		float3 x2 = Target2.GetLocation() + Target2.TerahedronInstance.Position[i];
 
-		float Alpha = 0.5;
-		float Beta = 1.5;
+		float Distance = Math::Dot(x1, x2);
+		float RadiusSum = Target1.Radius + Target2.Radius;
 
-		float Ov = Math::Dot(v1 - v2, Normal);
-
-		float fn = -Kd * Math::Pow(Overlap, Alpha) * Ov - Kr * Math::Pow(Overlap, Beta);
-		//point to T2
-		float3 Fn = Normal * fn;
-
-		Target2.ApplyForce(Fn);
-		Target1.ApplyForce(Fn * -1);
+		if (Distance <= RadiusSum * RadiusSum)
+		{
+			float3 Fn = this->GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
+			//fn points to t2
+			Target2.ApplyForce(Fn);
+			Target1.ApplyForce(Fn * -1);
+		}
 	}
 	//apply friction
+	//friction are simulated by geometry struct of sand particle.
 
-	float3 Friction = Target1.GetVelocity();
+	/*float3 Friction = Target1.GetVelocity();
 	Friction = Friction * -1;
 	Math::Normalize(Friction);
 	Friction = Friction * SandSimulator::FRICTION_CONSTANT; 
@@ -162,7 +152,7 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(Physics::Particle & Target1,
 	Friction = Friction * -1;
 	Math::Normalize(Friction);
 	Friction = Friction * SandSimulator::FRICTION_CONSTANT;
-	Target2.ApplyForce(Friction);
+	Target2.ApplyForce(Friction);*/
 
 	return Tool::Success();
 }
@@ -204,5 +194,34 @@ float SandSimulator::GetKr(float3 T1, float3 T2)
 	float Eeff = ((1 - T1.y()*T1.y()) / T1.z()) + ((1 - T2.y()*T2.y()) / T2.z());
 	Eeff = 1 / Eeff;
 	return 4.0 / 3.0 * Eeff * Math::Sqrt(Reff);
+}
+
+float3 SandSimulator::GetContactForce(const Engine::float3 x1, const Engine::float3 x2,
+									  const float m1         , const float m2,
+									  const Engine::float3 v1, const Engine::float3 v2,
+									  const float r1		 , const float r2)
+{
+	//if contacted, apply contact force
+	float Distance = Math::Dot(x1, x2);
+	float RadiusSum = r1 + r2;
+	
+	float3 CenterVector = x2 - x1;
+	float3 Normal = Math::Normalize(CenterVector);
+	float Overlap = Math::Max((float)0.0, RadiusSum - Math::Sqrt(Distance));
+	float Meff = (m1 * m2) / (m1 + m2);
+	//dissipation
+	float Kd = this->GetKd(Meff, MS_PER_UPDATE);
+	//stiffness
+	float Kr = this->GetKr(Meff, MS_PER_UPDATE);
+
+	float Alpha = 0.5;
+	float Beta = 1.5;
+
+	float Ov = Math::Dot(v1 - v2, Normal);
+
+	float fn = -Kd * Math::Pow(Overlap, Alpha) * Ov - Kr * Math::Pow(Overlap, Beta);
+	//point to T2
+	float3 Fn = Normal * fn;
+	return Fn;
 }
 

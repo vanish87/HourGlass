@@ -42,8 +42,6 @@ namespace Physics {
 
 
 		const float3 GetVelocity() const;
-
-		Tool::ReturnCode HandleCollisionWith(Particle& Target);
         
     protected:
 		float3 Location;//physics location that differs from render element's

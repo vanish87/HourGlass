@@ -12,7 +12,7 @@
 #include "PreDeclear.h"
 #include <unordered_map>
 #include <list>
-#include "Particle.hpp"
+#include "SandParticle.hpp"
 
 class SandSimulator
 {
@@ -33,18 +33,23 @@ public:
     
 private:
 	Tool::ReturnCode UpdateSpatialHash();
-	Tool::ReturnCode CheckDection(Physics::Particle& PaticleIn, std::list<Physics::Particle*>& Cadidates);
-	Tool::ReturnCode HandleCollisionWith(Physics::Particle & Target1, Physics::Particle & Target2);
+	Tool::ReturnCode CheckDection(SandParticle& PaticleIn, std::list<SandParticle*>& Cadidates);
+	Tool::ReturnCode HandleCollisionWith(SandParticle & Target1, SandParticle & Target2);
 
 	float GetKd(float MassEff = 0, float TimeContact = 1);
 	float GetKr(float MassEff = 0, float TimeContact = 1);
-	float GetKd(float3 T1, float3 T2);
-	float GetKr(float3 T1, float3 T2);
+	float GetKd(Engine::float3 T1, Engine::float3 T2);
+	float GetKr(Engine::float3 T1, Engine::float3 T2);
 
-    std::array<Physics::Particle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
+	Engine::float3 GetContactForce(const Engine::float3 x1, const Engine::float3 x2,
+								   const float m1, const float m2,
+								   const Engine::float3 v1, const Engine::float3 v2,
+								   const float r1		  , const float r2);
+
+    std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
 
 	static const uint				VOXEL_CELL_SIZE;
-	std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<Physics::Particle*>>>> SpatialHash;
+	std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<SandParticle*>>>> SpatialHash;
     
 };
 
