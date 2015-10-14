@@ -79,4 +79,8 @@ namespace Physics
 	{
 		return this->Velocity;
 	}
+	void Particle::SetVelocity(const float3& NewVelocity)
+	{
+		this->Velocity = NewVelocity;
+	};
 }

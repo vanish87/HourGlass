@@ -9,6 +9,7 @@
 #include "SandParticle.hpp"
 #include "Vector.h"
 #include "ReturnCode.hpp"
+#include "Math.h"
 
 using namespace Engine;
 using namespace Physics;
@@ -37,8 +38,8 @@ void SandParticle::Update()
 
 void SandParticle::ApplyRestrictions()
 {
-	if (this->Location.y() < 0)
+	if (this->RestrictionInstance.Check(*this))
 	{
-		this->Velocity.y() = this->Velocity.y() * -1;
+		this->RestrictionInstance.Apply(*this);
 	}
 }

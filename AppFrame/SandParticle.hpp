@@ -11,6 +11,7 @@
 
 #include "PreDeclear.h"
 #include "Particle.hpp"
+#include "ConeRestriction.hpp"
 
 class SandParticle : public Physics::Particle
 {
@@ -36,6 +37,8 @@ private:
 	};
 
 	static Tetrahedron TerahedronInstance;
+
+	ConeRestriction RestrictionInstance;
     
 };
 

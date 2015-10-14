@@ -34,7 +34,7 @@ Tool::ReturnCode SandSimulator::Init()
 	{
 		it->Create(SPHERE);
 		it->AddToScene();
-		it->SetLocation(float3(0, 1, 5));
+		it->SetLocation(float3(Math::RandomReal(-1.0,1.0), 1, 5));
         it->SetScale(float3(0.1,0.1,0.1));
 	}
 

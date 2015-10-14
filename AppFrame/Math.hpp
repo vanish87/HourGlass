@@ -7,6 +7,7 @@
 #include "PreDeclear.h"
 #include <cmath>
 #include <algorithm>
+#include <random>
 
 namespace Engine
 {
@@ -339,7 +340,28 @@ namespace Engine
 			ret.z() = std::min(lhs.z(), rhs.z());
 			return ret;
 		}
-		float Abs( float num );
+
+		template <typename T>
+		T Abs(T num)
+		{
+			return std::fabs(num);
+		}
+
+		template <typename T>
+		T RandomInt(const T& from, const T& to)
+		{
+			std::default_random_engine generator;
+			std::uniform_int_distribution<T> distribution(from, to);
+			return static_cast<T>distribution(generator);
+		}
+
+		template <typename T>
+		T RandomReal(const T& from, const T& to)
+		{
+			std::default_random_engine generator;
+			std::uniform_real_distribution<T> distribution(from, to);
+			return static_cast<T>distribution(generator);
+		}
 	}
 }
 

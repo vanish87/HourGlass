@@ -42,6 +42,7 @@ namespace Physics {
 
 
 		const float3 GetVelocity() const;
+		void SetVelocity(const float3& NewVelocity);
         
     protected:
 		float3 Location;//physics location that differs from render element's

@@ -267,13 +267,5 @@ namespace Engine
 			* /
 			return true;
 		}*/
-
-		float Abs( float num )
-		{
-			return std::fabs(num);
-		}
-
-
-
 	}
 }
