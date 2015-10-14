@@ -20,7 +20,7 @@
 static NSUInteger kMaxInflightBuffers = 3;
 
 // Max API memory buffer size.
-static const size_t kMaxBytesPerFrame = 1024*1024*16;
+static const size_t kMaxBytesPerFrame = 1024*1024*128;
 
 
 id <MTLDevice> _device;

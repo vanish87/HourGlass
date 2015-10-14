@@ -20,6 +20,7 @@ namespace Tool
 namespace Engine {
     
     class SceneManager;
+    class App;
     class Mesh;
     
     template <typename T>

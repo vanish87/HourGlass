@@ -12,7 +12,7 @@
 
 using namespace Engine;
 
-const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, 0.98, 0);
+const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, -0.098, 0);
 const float3 SandSimulator::FRICTION_CONSTANT = float3(0, 0.01, 0);
 const uint	 SandSimulator::VOXEL_CELL_SIZE = 10;
 extern float MS_PER_UPDATE;
@@ -35,7 +35,7 @@ Tool::ReturnCode SandSimulator::Init()
 		it->Create(SPHERE);
 		it->AddToScene();
 		it->SetLocation(float3(Math::RandomReal(-1.0,1.0), 1, 5));
-        it->SetScale(float3(0.1,0.1,0.1));
+        it->SetScale(float3(0.03,0.03,0.03));
 	}
 
 	return Tool::Success();
@@ -54,6 +54,17 @@ Tool::ReturnCode SandSimulator::Update()
 	it != this->ParticlePool.end();
 		++it)
 	{
+        
+        //apply gravity first
+        it->ApplyForce(SandSimulator::GRAVITY_CONSTANT*it->GetMass());
+        
+        const float3 Position = it->GetLocation();
+        const int3 HashId = int3(Position.x(), Position.y(), Position.z()) / SandSimulator::VOXEL_CELL_SIZE;
+        
+        this->CheckDection(*it, this->SpatialHash[HashId.x()][HashId.y()][HashId.z()]);
+        
+        
+        it->Update();
 		/*
 		float3 Friction = it->GetVelocity();
 		Friction = Friction * -1;
@@ -65,42 +76,14 @@ Tool::ReturnCode SandSimulator::Update()
 }
 Tool::ReturnCode SandSimulator::UpdateSpatialHash()
 {
+    this->SpatialHash.clear();
 	for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
 		it != this->ParticlePool.end();
 		++it)
 	{
-		//apply gravity first
-		it->ApplyForce(SandSimulator::GRAVITY_CONSTANT*it->GetMass());
-
 		const float3 Position = it->GetLocation();
-		const int3 HashId = Position / SandSimulator::VOXEL_CELL_SIZE;
-		std::unordered_map<int, std::unordered_map<int, std::unordered_map<int, std::list<SandParticle*>>>>::iterator Xit = this->SpatialHash.find(HashId.x());
-		if (Xit != this->SpatialHash.end())
-		{
-			std::unordered_map<int, std::unordered_map<int, std::list<SandParticle*>>>::iterator Yit = Xit->second.find(HashId.y());
-			if (Yit != Xit->second.end())
-			{
-				std::unordered_map<int, std::list<SandParticle*>>::iterator Zit = Yit->second.find(HashId.z());
-				if (Zit != Yit->second.end())
-				{
-					this->CheckDection(*it, Zit->second);
-				}
-				else
-				{
-					this->SpatialHash[HashId.x()][HashId.y()][HashId.z()].push_back(&*it);
-				}
-			}
-			else
-			{
-				this->SpatialHash[HashId.x()][HashId.y()][HashId.z()].push_back(&*it);
-			}
-		}
-		else
-		{
-			this->SpatialHash[HashId.x()][HashId.y()][HashId.z()].push_back(&*it);
-		}
-
-		it->Update();
+		const int3 HashId = int3(Position.x(), Position.y(), Position.z()) / SandSimulator::VOXEL_CELL_SIZE;
+        this->SpatialHash[HashId.x()][HashId.y()][HashId.z()].push_back(&*it);
 	}
 	return Tool::Success();
 };
@@ -127,13 +110,15 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, Sand
 	{
 		float3 x1 = Target1.GetLocation() + Target1.TerahedronInstance.Position[i];
 		float3 x2 = Target2.GetLocation() + Target2.TerahedronInstance.Position[i];
+        
+        float3 VectorToX2 = x2 - x1;
 
-		float Distance = Math::Dot(x1, x2);
+		float Distance = Math::Dot(VectorToX2, VectorToX2);
 		float RadiusSum = Target1.Radius + Target2.Radius;
 
-		if (Distance <= RadiusSum * RadiusSum)
+		if (Distance <= RadiusSum * RadiusSum && Distance > 0)
 		{
-			float3 Fn = this->GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
+			float3 Fn = this->GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius) * 0.0001;
 			//fn points to t2
 			Target2.ApplyForce(Fn);
 			Target1.ApplyForce(Fn * -1);
@@ -202,7 +187,8 @@ float3 SandSimulator::GetContactForce(const Engine::float3 x1, const Engine::flo
 									  const float r1		 , const float r2)
 {
 	//if contacted, apply contact force
-	float Distance = Math::Dot(x1, x2);
+    float3 VectorToX2 = x2 - x1;
+    float Distance = Math::Dot(VectorToX2, VectorToX2);
 	float RadiusSum = r1 + r2;
 	
 	float3 CenterVector = x2 - x1;

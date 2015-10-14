@@ -13,7 +13,11 @@
 
 class MainLoopThread:public Tool::Thread
 {
-public:    
+public:
+    struct Parameter
+    {
+        Engine::App* AppInstance;
+    };
     Tool::ReturnCode Main(void* para);
 };
 #endif /* MainLoopThread_hpp */

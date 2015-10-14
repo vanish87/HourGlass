@@ -57,7 +57,7 @@ namespace Physics
 
 	void Particle::SetLocation(const float3& NewLocation)
 	{
-		this->RenderElement->SetLocation(NewLocation);
+		this->Location = NewLocation;
 	}
 	const float3 Particle::GetLocation() const
 	{

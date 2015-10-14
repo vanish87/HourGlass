@@ -22,21 +22,24 @@ public:
     
     void Update();
     
+    
+    
 private:
 	void ApplyRestrictions();
 
 	Engine::float4x4 SandMatrix;
 
-	//sand is not a sphere but a combination of four smaller sphere that on the four 
-	//points of tetrahedron.
-	//This intends to provide enough frictions for sand
-	static const uint NumberOfSphere = 4;
-	struct Tetrahedron
-	{
-		Engine::float3 Position[SandParticle::NumberOfSphere];
-	};
+    
+    //sand is not a sphere but a combination of four smaller sphere that on the four
+    //points of tetrahedron.
+    //This intends to provide enough frictions for sand
+    static const uint NumberOfSphere = 4;
+    struct Tetrahedron
+    {
+        Engine::float3 Position[SandParticle::NumberOfSphere];
+    };
 
-	static Tetrahedron TerahedronInstance;
+    SandParticle::Tetrahedron TerahedronInstance;
 
 	ConeRestriction RestrictionInstance;
     

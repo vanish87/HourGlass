@@ -24,7 +24,7 @@ bool ConeRestriction::Check(Particle& ParticleIn)
 {
 	float3 Position = ParticleIn.GetLocation();
 	float y = this->h - ((Position.x() * this->h) / (this->r * Math::Cos(this->Theta)));
-	if (y >= Position.y())
+	if (y*0.1 - 2 >= Position.y() || Position.x() > 2 || Position.x() < -2)
 	{
 		return true;
 	}
@@ -32,6 +32,9 @@ bool ConeRestriction::Check(Particle& ParticleIn)
 };
 Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 {
-	ParticleIn.SetVelocity(ParticleIn.GetVelocity() * -0.001);
+    float3 vel =  ParticleIn.GetVelocity();
+    vel.y() = vel.y()* -1;
+    vel.x() = vel.x()* -0.1;
+	ParticleIn.SetVelocity(vel);
 	return Tool::Success();
 };

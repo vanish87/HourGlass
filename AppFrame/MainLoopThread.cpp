@@ -11,13 +11,15 @@
 #include "Context.hpp"
 #include "SceneManager.h"
 #include "Particle.hpp"
+#include "App.hpp"
 
 using namespace Tool;
 
 float MS_PER_UPDATE = 1/60.0;
 
 Tool::ReturnCode MainLoopThread::Main(void* para)
-{    
+{
+    MainLoopThread::Parameter* RealPara = (MainLoopThread::Parameter*)para;
     std::clock_t start;
     double duration;
     
@@ -32,10 +34,10 @@ Tool::ReturnCode MainLoopThread::Main(void* para)
         double elapsed = (current - previous)/ (double)CLOCKS_PER_SEC;
         previous = current;
         lag += elapsed;
-        int Count = 0;
         while (lag >= MS_PER_UPDATE)
         {
-            Context::Instance().GetSceneManager().Update();
+            //Context::Instance().GetSceneManager().Update();
+            RealPara->AppInstance->Update();
             lag -= MS_PER_UPDATE;
         }
         Context::Instance().GetSceneManager().Flush();

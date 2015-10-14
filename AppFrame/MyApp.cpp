@@ -38,6 +38,6 @@ Tool::ReturnCode MyApp::Deinit()
 Tool::ReturnCode MyApp::Update()
 {
 	App::Update();
-    //this->SandSim.Update();
+    this->SandSim.Update();
 	return Tool::Success();
 };

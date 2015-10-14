@@ -22,9 +22,9 @@ public:
 	virtual Tool::ReturnCode Apply(Physics::Particle& ParticleIn);
 
 private:
-	const float h = 10;
-	const float Theta = Math::PI / 6;
-	const float r = 3;
+	const float h = 5;
+	const float Theta = Math::PI / 9;
+	const float r = 5;
 };
 
 #endif /* ConeRestriction_hpp */

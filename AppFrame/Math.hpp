@@ -350,17 +350,19 @@ namespace Engine
 		template <typename T>
 		T RandomInt(const T& from, const T& to)
 		{
-			std::default_random_engine generator;
+            std::random_device rd;
+            std::mt19937 generator(rd());
 			std::uniform_int_distribution<T> distribution(from, to);
-			return static_cast<T>distribution(generator);
+			return static_cast<T>(distribution(generator));
 		}
 
 		template <typename T>
 		T RandomReal(const T& from, const T& to)
 		{
-			std::default_random_engine generator;
+            std::random_device rd;
+            std::mt19937 generator(rd());
 			std::uniform_real_distribution<T> distribution(from, to);
-			return static_cast<T>distribution(generator);
+			return static_cast<T>(distribution(generator));
 		}
 	}
 }

@@ -32,11 +32,13 @@ namespace Engine {
         //main loop entry
         ReturnCode Run()
         {
-            return MainLoop.Create();
+            MainParameter.AppInstance = this;
+            return MainLoop.Create(&MainParameter);
         };
         
         
     private:
+        MainLoopThread::Parameter MainParameter;
         MainLoopThread MainLoop;
         
     };

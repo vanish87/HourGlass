@@ -27,7 +27,7 @@ public:
     //User update
     Tool::ReturnCode Update();
     
-    static const uint				NUMBER_OF_PARTICLES = 5;
+    static const uint				NUMBER_OF_PARTICLES = 20;
     static const Engine::float3		GRAVITY_CONSTANT;
     static const Engine::float3		FRICTION_CONSTANT;
     
