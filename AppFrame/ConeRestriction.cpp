@@ -37,7 +37,8 @@ Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 		float3 v1 = ParticleIn.GetVelocity();
 		float3 v2 = float3(0,0,0);
 		float3 Fn = SandSimulator::GetContactForce(x1,x2,m1,m2,v1,v2,1,0);
-		ParticleIn.ApplyForce(Fn);
+		//points to T2
+		ParticleIn.ApplyForce(Fn*-1);
 	}
 	if (Position.x() > 2 || Position.x() < -2)
 	{
