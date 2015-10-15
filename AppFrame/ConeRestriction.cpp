@@ -8,6 +8,7 @@
 
 #include "ConeRestriction.hpp"
 #include "ReturnCode.hpp"
+#include "SandSimulator.hpp"
 
 using namespace Engine;
 using namespace Physics;
@@ -20,21 +21,28 @@ ConeRestriction::~ConeRestriction()
 
 };
 
-bool ConeRestriction::Check(Particle& ParticleIn)
-{
-	float3 Position = ParticleIn.GetLocation();
-	float y = this->h - ((Position.x() * this->h) / (this->r * Math::Cos(this->Theta)));
-	if (y*0.1 - 2 >= Position.y() || Position.x() > 2 || Position.x() < -2)
-	{
-		return true;
-	}
-	return false;
-};
+//http://mathworld.wolfram.com/Cone.html
 Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 {
-    float3 vel =  ParticleIn.GetVelocity();
-    vel.y() = vel.y()* -1;
-    vel.x() = vel.x()* -0.1;
+	float3 Position = ParticleIn.GetLocation();
+	Position = Position - Position0;
+	float k = Math::Sqrt(Position.x()*Position.x() + Position.z()*Position.z());
+	float3 vel = ParticleIn.GetVelocity();
+	if (k >= Position.y()) 
+	{
+		float3 x1 = ParticleIn.GetLocation();
+		float3 x2 = float3(x1.x(), k, x1.z());
+		float  m1 = ParticleIn.GetMass();
+		float  m2 = this->Mass;
+		float3 v1 = ParticleIn.GetVelocity();
+		float3 v2 = float3(0,0,0);
+		float3 Fn = SandSimulator::GetContactForce(x1,x2,m1,m2,v1,v2,1,0);
+		ParticleIn.ApplyForce(Fn);
+	}
+	if (Position.x() > 2 || Position.x() < -2)
+	{
+		vel.x() = vel.x()* -0.1;
+	}
 	ParticleIn.SetVelocity(vel);
 	return Tool::Success();
 };

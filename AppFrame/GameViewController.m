@@ -275,9 +275,9 @@ void* Graphics_CreateMesh(enum MeshType Type)
                     Graphics_GetScale(MeshData, &xSacle, &ySacle, &zSacle);
                     
                     matrix_float4x4 base_model = matrix_identity_float4x4;
-                    base_model = matrix_multiply(base_model , matrix_from_scale(xSacle,ySacle,zSacle));
-					base_model = matrix_multiply(base_model , matrix_from_rotation(0, 0.0f, 1.0f, 0.0f));
-					base_model = matrix_multiply(base_model , matrix_from_translation(x, y, z));
+                    base_model = matrix_multiply(matrix_from_scale(xSacle,ySacle,zSacle)	, base_model);
+					//base_model = matrix_multiply(matrix_from_rotation(0, 0.0f, 1.0f, 0.0f)	, base_model);
+					base_model = matrix_multiply(matrix_from_translation(x, y, z)			, base_model);
                     matrix_float4x4 base_mv = matrix_multiply(_viewMatrix, base_model);
                     matrix_float4x4 modelViewMatrix = matrix_multiply(base_mv, matrix_from_rotation(0, 1.0f, 1.0f, 1.0f));
                     
@@ -360,8 +360,17 @@ static simd::float4x4 lookAt(   const simd::float3& eye,
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
     _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
     
-    _viewMatrix = matrix_identity_float4x4;
-    //_viewMatrix = lookAt({0, 0, 1}, {0, 0, -1}, {0, 1, 0});
+    //_viewMatrix = matrix_identity_float4x4;
+	float[4][4] ViewMatrix;
+
+	Graphics_GetCameraViewMatrix(ViewMatrix);
+    _viewMatrix = {
+        .columns[0] = { ViewMatrix[0][0], ViewMatrix[0][1], ViewMatrix[0][2], ViewMatrix[0][3] },
+        .columns[1] = { ViewMatrix[1][0], ViewMatrix[1][1], ViewMatrix[1][2], ViewMatrix[1][3] },
+        .columns[2] = { ViewMatrix[2][0], ViewMatrix[2][1], ViewMatrix[2][2], ViewMatrix[2][3] },
+        .columns[3] = { ViewMatrix[3][0], ViewMatrix[3][1], ViewMatrix[3][2], ViewMatrix[3][3] },
+    };
+    
 }
 
 - (void)_update

@@ -32,14 +32,11 @@ SandParticle::~SandParticle()
 
 void SandParticle::Update()
 {
-	Particle::Update();
 	this->ApplyRestrictions();
+	Particle::Update();
 }
 
 void SandParticle::ApplyRestrictions()
 {
-	if (this->RestrictionInstance.Check(*this))
-	{
-		this->RestrictionInstance.Apply(*this);
-	}
+	this->RestrictionInstance.Apply(*this);
 }

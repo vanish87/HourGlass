@@ -83,3 +83,18 @@ void* Graphics_PopAndGetMeshData()
     }
     return nullptr;
 }
+
+
+void  Graphics_GetCameraViewMatrix(float** Matrix)
+{
+	if (Matrix == nullptr ) return;
+	
+	Engine::Camera CurrentCamera = Context::Instance().GetSceneManager().GetCurrentCamera();
+
+	Engine::float4x4 ViewMatrix = CurrentCamera.GetViewMatirx();
+
+	Matrix[0][0] = ViewMatrix[0][0];	Matrix[0][1] = ViewMatrix[0][1];	Matrix[0][2] = ViewMatrix[0][2];	Matrix[0][3] = ViewMatrix[0][3];
+	Matrix[1][0] = ViewMatrix[1][0];	Matrix[1][1] = ViewMatrix[1][1];	Matrix[1][2] = ViewMatrix[1][2];	Matrix[1][3] = ViewMatrix[1][3];
+	Matrix[2][0] = ViewMatrix[2][0];	Matrix[2][1] = ViewMatrix[2][1];	Matrix[2][2] = ViewMatrix[2][2];	Matrix[2][3] = ViewMatrix[2][3];
+	Matrix[3][0] = ViewMatrix[3][0];	Matrix[3][1] = ViewMatrix[3][1];	Matrix[3][2] = ViewMatrix[3][2];	Matrix[3][3] = ViewMatrix[3][3];
+}

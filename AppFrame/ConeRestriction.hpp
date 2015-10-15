@@ -18,13 +18,23 @@ public:
 	ConeRestriction();
     virtual ~ConeRestriction();
 
-	virtual bool Check(Physics::Particle& ParticleIn);
 	virtual Tool::ReturnCode Apply(Physics::Particle& ParticleIn);
 
 private:
-	const float h = 5;
-	const float Theta = Math::PI / 9;
-	const float r = 5;
+
+	/*
+	Cone parameter function
+	x = (k / h)*r*cos(Theta) + x0;
+	y = k					 + y0;
+	z = (k / h)*r*sin(Theta) + z0;
+	where
+		k = [0, h];
+		Theta = [0, 2PI];
+	*/
+	const float h = 1;
+	const float r = 1;
+	const float Mass = 5000;
+	const Engine::float3 Position0 = Engine::float3(0, 0, 100);
 };
 
 #endif /* ConeRestriction_hpp */

@@ -19,8 +19,6 @@ namespace Physics
 	public:
 		Restriction();
 		virtual ~Restriction();
-
-		virtual bool Check(Physics::Particle& ParticleIn);
 		virtual Tool::ReturnCode Apply(Physics::Particle& ParticleIn);
 	};
 

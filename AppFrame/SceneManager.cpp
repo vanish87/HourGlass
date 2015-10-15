@@ -5,7 +5,6 @@ namespace Engine
 
 	SceneManager::SceneManager(void)
 	{
-        
 	}
 
 

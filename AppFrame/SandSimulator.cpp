@@ -12,7 +12,7 @@
 
 using namespace Engine;
 
-const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, -0.098, 0);
+const float3 SandSimulator::GRAVITY_CONSTANT = float3(0, -9.8, 0);
 const float3 SandSimulator::FRICTION_CONSTANT = float3(0, 0.01, 0);
 const uint	 SandSimulator::VOXEL_CELL_SIZE = 10;
 extern float MS_PER_UPDATE;
@@ -34,7 +34,7 @@ Tool::ReturnCode SandSimulator::Init()
 	{
 		it->Create(SPHERE);
 		it->AddToScene();
-		it->SetLocation(float3(Math::RandomReal(-1.0,1.0), 1, 5));
+		it->SetLocation(float3(Math::RandomReal(-1.0,1.0), 1, 100));
         it->SetScale(float3(0.03,0.03,0.03));
 	}
 
@@ -118,7 +118,7 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, Sand
 
 		if (Distance <= RadiusSum * RadiusSum && Distance > 0)
 		{
-			float3 Fn = this->GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius) * 0.0001;
+			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
 			//fn points to t2
 			Target2.ApplyForce(Fn);
 			Target1.ApplyForce(Fn * -1);

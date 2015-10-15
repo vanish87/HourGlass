@@ -24,7 +24,6 @@ Tool::ReturnCode MyApp::Init()
 {
 	App::Init();
     this->SandSim.Init();
-
 	return Tool::Success();
 };
 //Deinit staffs

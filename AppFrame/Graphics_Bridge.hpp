@@ -25,6 +25,7 @@ bool  Graphics_LockRenderQueue();
 bool  Graphics_UnlockRenderQueue();
 bool  Graphics_IsRenderQueueEmpty();
 void* Graphics_PopAndGetMeshData();
+void  Graphics_GetCameraViewMatrix(float** Matrix);
     
 unsigned long Graphics_GetNumberOfMeshes();
 

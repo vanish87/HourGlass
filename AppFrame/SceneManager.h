@@ -7,6 +7,7 @@
 
 #include "SceneObject.h"
 #include "Mutex.hpp"
+#include "Camera.h"
 
 namespace Engine
 {
@@ -27,12 +28,14 @@ namespace Engine
         
 		//std::vector<Light*> GetLights();
 		std::vector<Mesh*>& GetRenderList(){return render_list_;};
+		Camera& GetCurrentCamera() { return this->SceneCamera; };
 	protected:
 		std::vector<Mesh*> render_list_;
 		std::vector<SceneObject*> scene_object_list;
         
         Tool::Mutex RenderingLock;
 
+		Camera SceneCamera;
 		//std::vector<Light*> lights_;
 	};
 

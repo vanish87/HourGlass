@@ -21,11 +21,6 @@ namespace Physics
 	{
 
 	};
-
-	bool Restriction::Check(Particle& ParticleIn)
-	{
-		return false;
-	};
 	Tool::ReturnCode Restriction::Apply(Particle& ParticleIn)
 	{
 		return Tool::Success();

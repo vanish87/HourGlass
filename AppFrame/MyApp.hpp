@@ -27,6 +27,7 @@ public:
     
 private:
 	SandSimulator SandSim;
+	Engine::float4x4 ViewMatrix;
 };
 
 #endif /* MyApp_hpp */
