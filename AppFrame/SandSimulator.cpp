@@ -34,8 +34,8 @@ Tool::ReturnCode SandSimulator::Init()
 	{
 		it->Create(SPHERE);
 		it->AddToScene();
-		it->SetLocation(float3(Math::RandomReal(-1.0,1.0), 1, 100));
-        it->SetScale(float3(0.03,0.03,0.03));
+		it->SetLocation(float3(Math::RandomInt(-10,10), 50, 100));
+        it->SetScale(float3(1,1,1));
 	}
 
 	return Tool::Success();
@@ -196,9 +196,9 @@ float3 SandSimulator::GetContactForce(const Engine::float3 x1, const Engine::flo
 	float Overlap = Math::Max((float)0.0, RadiusSum - Math::Sqrt(Distance));
 	float Meff = (m1 * m2) / (m1 + m2);
 	//dissipation
-	float Kd = this->GetKd(Meff, MS_PER_UPDATE);
+    float Kd = SandSimulator::GetKd(Meff, MS_PER_UPDATE);
 	//stiffness
-	float Kr = this->GetKr(Meff, MS_PER_UPDATE);
+    float Kr = SandSimulator::GetKr(Meff, MS_PER_UPDATE);
 
 	float Alpha = 0.5;
 	float Beta = 1.5;

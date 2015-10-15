@@ -36,11 +36,20 @@ Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 		float  m2 = this->Mass;
 		float3 v1 = ParticleIn.GetVelocity();
 		float3 v2 = float3(0,0,0);
-		float3 Fn = SandSimulator::GetContactForce(x1,x2,m1,m2,v1,v2,1,0);
+		float3 Fn = SandSimulator::GetContactForce(x1,x2,m1,m2,v1,v2,10,10);
 		//points to T2
-		ParticleIn.ApplyForce(Fn*-1);
+		//ParticleIn.ApplyForce(Fn*-1);
+        
+        
+        vel.y() = vel.y() * -1;
 	}
-	if (Position.x() > 2 || Position.x() < -2)
+    
+    if(Position.y() < -5)
+    {
+        //vel.y() = vel.y() * -1;
+    }
+        
+	if (Position.x() > 20 || Position.x() < -20)
 	{
 		vel.x() = vel.x()* -0.1;
 	}

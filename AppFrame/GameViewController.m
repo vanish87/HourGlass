@@ -358,18 +358,20 @@ static simd::float4x4 lookAt(   const simd::float3& eye,
 {
     // When reshape is called, update the view and projection matricies since this means the view orientation or size changed
     float aspect = fabs(self.view.bounds.size.width / self.view.bounds.size.height);
-    _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 100.0f);
+    _projectionMatrix = matrix_from_perspective_fov_aspectLH(65.0f * (M_PI / 180.0f), aspect, 0.1f, 1000.0f);
     
     //_viewMatrix = matrix_identity_float4x4;
-	float[4][4] ViewMatrix;
+	float ViewMatrix[4][4];
 
 	Graphics_GetCameraViewMatrix(ViewMatrix);
-    _viewMatrix = {
+    matrix_float4x4 newView =  {
         .columns[0] = { ViewMatrix[0][0], ViewMatrix[0][1], ViewMatrix[0][2], ViewMatrix[0][3] },
         .columns[1] = { ViewMatrix[1][0], ViewMatrix[1][1], ViewMatrix[1][2], ViewMatrix[1][3] },
         .columns[2] = { ViewMatrix[2][0], ViewMatrix[2][1], ViewMatrix[2][2], ViewMatrix[2][3] },
         .columns[3] = { ViewMatrix[3][0], ViewMatrix[3][1], ViewMatrix[3][2], ViewMatrix[3][3] },
     };
+    
+    _viewMatrix = newView;
     
 }
 

@@ -11,6 +11,7 @@
 		BC2902E71BCE6FD000905E14 /* ConeRestriction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902E11BCE6FD000905E14 /* ConeRestriction.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC2902E81BCE6FD000905E14 /* Restriction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902E31BCE6FD000905E14 /* Restriction.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC2902E91BCE6FD000905E14 /* SandParticle.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902E51BCE6FD000905E14 /* SandParticle.cpp */; settings = {ASSET_TAGS = (); }; };
+		BC2902EC1BCFDA9300905E14 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902EA1BCFDA9300905E14 /* Camera.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC59919E1BC17B8600336A88 /* MyApp.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC5991A61BC7483E00336A88 /* Math.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC5991A21BC7483E00336A88 /* Math.cpp */; settings = {ASSET_TAGS = (); }; };
 		BCDAC7761BADA55F00F05156 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = BCDAC7751BADA55F00F05156 /* AppDelegate.m */; };
@@ -64,6 +65,8 @@
 		BC2902E41BCE6FD000905E14 /* Restriction.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Restriction.hpp; sourceTree = "<group>"; };
 		BC2902E51BCE6FD000905E14 /* SandParticle.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SandParticle.cpp; sourceTree = "<group>"; };
 		BC2902E61BCE6FD000905E14 /* SandParticle.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = SandParticle.hpp; sourceTree = "<group>"; };
+		BC2902EA1BCFDA9300905E14 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		BC2902EB1BCFDA9300905E14 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		BC59919E1BC17B8600336A88 /* MyApp.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = MyApp.cpp; sourceTree = "<group>"; };
 		BC59919F1BC17B8600336A88 /* MyApp.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = MyApp.hpp; sourceTree = "<group>"; };
 		BC5991A11BC17FE200336A88 /* SharedDataType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SharedDataType.h; sourceTree = "<group>"; };
@@ -282,6 +285,8 @@
 		BCE33BFE1BBA74F20058338C /* Graphics */ = {
 			isa = PBXGroup;
 			children = (
+				BC2902EA1BCFDA9300905E14 /* Camera.cpp */,
+				BC2902EB1BCFDA9300905E14 /* Camera.h */,
 				BCE33C0E1BBA88610058338C /* SceneObject.cpp */,
 				BCE33C0F1BBA88610058338C /* SceneObject.h */,
 				BCE33C0B1BBA87630058338C /* SceneManager.cpp */,
@@ -433,6 +438,7 @@
 				BC2902E01BCA60FF00905E14 /* SandSimulator.cpp in Sources */,
 				BCE33C131BBA91FB0058338C /* Context.cpp in Sources */,
 				BC5991A01BC17B8600336A88 /* MyApp.cpp in Sources */,
+				BC2902EC1BCFDA9300905E14 /* Camera.cpp in Sources */,
 				BCE33BE61BB922780058338C /* Thread.cpp in Sources */,
 				BCE33B1D1BAEA8920058338C /* App.cpp in Sources */,
 				BCE33B281BAEB5960058338C /* GameViewController.m in Sources */,

@@ -42,10 +42,10 @@ private:
 	Tool::ReturnCode CheckDection(SandParticle& PaticleIn, std::list<SandParticle*>& Cadidates);
 	Tool::ReturnCode HandleCollisionWith(SandParticle & Target1, SandParticle & Target2);
 
-	float GetKd(float MassEff = 0, float TimeContact = 1);
-	float GetKr(float MassEff = 0, float TimeContact = 1);
-	float GetKd(Engine::float3 T1, Engine::float3 T2);
-	float GetKr(Engine::float3 T1, Engine::float3 T2);
+	static float GetKd(float MassEff = 0, float TimeContact = 1);
+	static float GetKr(float MassEff = 0, float TimeContact = 1);
+	static float GetKd(Engine::float3 T1, Engine::float3 T2);
+	static float GetKr(Engine::float3 T1, Engine::float3 T2);
 
 
     std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;

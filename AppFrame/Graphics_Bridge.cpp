@@ -85,7 +85,7 @@ void* Graphics_PopAndGetMeshData()
 }
 
 
-void  Graphics_GetCameraViewMatrix(float** Matrix)
+void  Graphics_GetCameraViewMatrix(float Matrix[4][4])
 {
 	if (Matrix == nullptr ) return;
 	
