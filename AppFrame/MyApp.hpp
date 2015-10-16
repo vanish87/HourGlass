@@ -25,6 +25,8 @@ public:
     //User update
     virtual Tool::ReturnCode Update();
     
+    void ResetSimulator();
+    
 private:
 	SandSimulator SandSim;
 	Engine::float4x4 ViewMatrix;

@@ -16,3 +16,8 @@ void MainLoopBridge_StartGameLoop(void)
     GlobalGame.Init();
     GlobalGame.Run();
 }
+
+void MainLoopBridge_ResetSimulator()
+{
+    GlobalGame.ResetSimulator();
+}

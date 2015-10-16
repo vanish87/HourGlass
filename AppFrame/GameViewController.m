@@ -100,6 +100,10 @@ id <MTLDevice> _device;
 {
     self.debugLabel.text = [NSString stringWithFormat:@"%f", sender.value];
 }
+-(IBAction)OnClick:(UIButton *)
+{
+    
+}
 
 void* Graphics_CreateMesh(enum MeshType Type)
 {

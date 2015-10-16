@@ -13,6 +13,7 @@
 extern "C" {
 #endif
 void MainLoopBridge_StartGameLoop(void);
+void MainLoopBridge_ResetSimulator();
 #ifdef __cplusplus
 }
 #endif

@@ -40,3 +40,8 @@ Tool::ReturnCode MyApp::Update()
     this->SandSim.Update();
 	return Tool::Success();
 };
+
+void MyApp::ResetSimulator()
+{
+    this->SandSim.Reset();
+}

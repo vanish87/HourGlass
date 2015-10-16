@@ -16,13 +16,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7wH-gE-bcG">
-                                <rect key="frame" x="239" y="20" width="192" height="97"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
-                                <state key="normal" title="testttttttttt">
-                                    <color key="titleShadowColor" red="0.66205087990392708" green="0.20161972225719615" blue="1" alpha="1" colorSpace="calibratedRGB"/>
-                                </state>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" preservesSuperviewLayoutMargins="YES" layoutMarginsFollowReadableWidth="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Sev-dL-zcz">
                                 <rect key="frame" x="-24" y="146" width="600" height="30"/>
                                 <state key="normal" title="Button"/>
@@ -43,11 +36,22 @@
                                     <action selector="sliderValueChanged:" destination="BV1-FR-VrT" eventType="valueChanged" id="HpL-uF-DLS"/>
                                 </connections>
                             </slider>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7wH-gE-bcG">
+                                <rect key="frame" x="42" y="20" width="50" height="30"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
+                                <state key="normal" title="Reset">
+                                    <color key="titleShadowColor" red="0.66205087990392708" green="0.20161972225719615" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="OnClick:" destination="BV1-FR-VrT" eventType="touchUpInside" id="OYS-VP-wxF"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <connections>
                         <outlet property="debugLabel" destination="5GG-wq-Yeb" id="PIV-qD-pj7"/>
+                        <outlet property="resetButton" destination="7wH-gE-bcG" id="LIb-kv-iD7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

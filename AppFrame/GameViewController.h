@@ -14,8 +14,10 @@
 
 @property (weak, nonatomic) IBOutlet UILabel *debugLabel;
 @property (weak, nonatomic) IBOutlet UISlider *slider;
+@property (weak, nonatomic) IBOutlet UIButton *resetButton;
 
 -(IBAction)sliderValueChanged:(UISlider *)sender;
+-(IBAction)OnClick:(UIButton *)sender;
 
 @end
 
