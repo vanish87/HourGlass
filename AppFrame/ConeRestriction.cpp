@@ -22,6 +22,8 @@ ConeRestriction::~ConeRestriction()
 };
 
 //http://mathworld.wolfram.com/Cone.html
+//http://www.wolframalpha.com/input/?i=cone
+
 Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 {
 	float3 Position = ParticleIn.GetLocation();
