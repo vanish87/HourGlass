@@ -17,6 +17,10 @@ const float3 SandSimulator::FRICTION_CONSTANT = float3(0, 0.01, 0);
 const uint	 SandSimulator::VOXEL_CELL_SIZE = 10;
 extern float MS_PER_UPDATE;
 
+float SandSimulator::Alpha = 0.5;
+float SandSimulator::Beta = 1.5;
+float SandSimulator::NormalRestitution = 1;
+
 SandSimulator::SandSimulator()
 {
 
@@ -45,6 +49,36 @@ Tool::ReturnCode SandSimulator::Deinit()
 {
 	return Tool::Success();
 };
+
+Tool::ReturnCode SandSimulator::Reset()
+{
+	for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
+	it != this->ParticlePool.end();
+		++it)
+	{
+		it->Reset();
+		it->SetLocation(float3(Math::RandomInt(-10, 10), 63, 100));
+		it->SetScale(float3(1, 1, 1));
+	}
+	return Tool::Success();
+}
+Tool::ReturnCode SandSimulator::SetConntactParameter(float Mass, float AlphaIn, float BetaIn, float NormalRestitutionIn)
+{
+	this->Reset();
+	for (std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES>::iterator it = this->ParticlePool.begin();
+	it != this->ParticlePool.end();
+		++it)
+	{
+		it->SetMass(Mass);
+	}
+	SandSimulator::Alpha = AlphaIn;
+	SandSimulator::Beta = BetaIn;
+	SandSimulator::NormalRestitution = NormalRestitutionIn;
+
+	return Tool::Success();
+}
+;
+
 //User update
 Tool::ReturnCode SandSimulator::Update()
 {
@@ -118,7 +152,7 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, Sand
 
 		if (Distance <= RadiusSum * RadiusSum && Distance > 0)
 		{
-			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius) * 0.0001;
+			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
 			//fn points to t2
 			Target2.ApplyForce(Fn);
 			Target1.ApplyForce(Fn * -1);
@@ -146,7 +180,7 @@ float SandSimulator::GetKd(float MassEff, float TimeContact)
 {
 	if (MassEff > 0 && TimeContact > 0)
 	{
-		float NORMAL_RESTITUTION = 1;
+		float NORMAL_RESTITUTION = SandSimulator::NormalRestitution;
 		return 2 * MassEff * -Math::Ln(NORMAL_RESTITUTION) / TimeContact;
 	}
 	return 0.0f;
@@ -156,7 +190,7 @@ float SandSimulator::GetKr(float MassEff, float TimeContact)
 {
 	if (MassEff > 0 && TimeContact > 0)
 	{
-		float NORMAL_RESTITUTION = 1;
+		float NORMAL_RESTITUTION = SandSimulator::NormalRestitution;
 		float lnE = Math::Ln(NORMAL_RESTITUTION);
 		return (MassEff/( TimeContact * TimeContact)) *(lnE * lnE + Math::PI * Math::PI);
 	}
@@ -200,12 +234,9 @@ float3 SandSimulator::GetContactForce(const Engine::float3 x1, const Engine::flo
 	//stiffness
     float Kr = SandSimulator::GetKr(Meff, MS_PER_UPDATE);
 
-	float Alpha = 0.5;
-	float Beta = 1.5;
-
 	float Ov = Math::Dot(v1 - v2, Normal);
 
-	float fn = -Kd * Math::Pow(Overlap, Alpha) * Ov - Kr * Math::Pow(Overlap, Beta);
+	float fn = -Kd * Math::Pow(Overlap, SandSimulator::Alpha) * Ov - Kr * Math::Pow(Overlap, SandSimulator::Beta);
 	//point to T2
 	float3 Fn = Normal * fn;
 	return Fn;

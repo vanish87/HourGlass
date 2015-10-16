@@ -26,11 +26,13 @@ public:
     Tool::ReturnCode Deinit();
     //User update
     Tool::ReturnCode Update();
+
+	Tool::ReturnCode Reset();
+	Tool::ReturnCode SetConntactParameter(float Mass, float Alpha, float Beta, float NormalRestitution);
     
     static const uint				NUMBER_OF_PARTICLES = 100;
     static const Engine::float3		GRAVITY_CONSTANT;
     static const Engine::float3		FRICTION_CONSTANT;
-
 
 	static Engine::float3 GetContactForce(const Engine::float3 x1, const Engine::float3 x2,
 										  const float m1, const float m2,
@@ -47,6 +49,9 @@ private:
 	static float GetKd(Engine::float3 T1, Engine::float3 T2);
 	static float GetKr(Engine::float3 T1, Engine::float3 T2);
 
+	static float Alpha;
+	static float Beta;
+	static float NormalRestitution;
 
     std::array<SandParticle, SandSimulator::NUMBER_OF_PARTICLES> ParticlePool;
 

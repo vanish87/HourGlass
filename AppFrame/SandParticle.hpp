@@ -21,6 +21,7 @@ public:
     virtual ~SandParticle();
     
     void Update();
+	virtual void Reset();
     
     
     

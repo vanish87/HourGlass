@@ -45,7 +45,16 @@ namespace Physics
     void Particle::Render()
     {
         
-    };
+	};
+
+	void Particle::Reset()
+	{
+		Location = float3(0, 0, 0);
+		Velocity = float3(0, 0, 0);
+		Acceleration =float3(0, 0, 0);
+		Mass = 1;
+		Radius = 1;
+	};
     
     
     void Particle::ApplyForce(const float3& Force_)

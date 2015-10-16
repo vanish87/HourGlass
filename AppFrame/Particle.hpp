@@ -30,6 +30,7 @@ namespace Physics {
         
         virtual void Update();
         virtual void Render();
+		virtual void Reset();
         
         void ApplyForce(const float3& Force_);
 
