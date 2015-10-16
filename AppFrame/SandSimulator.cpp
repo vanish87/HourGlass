@@ -38,7 +38,7 @@ Tool::ReturnCode SandSimulator::Init()
 	{
 		it->Create(SPHERE);
 		it->AddToScene();
-		it->SetLocation(float3(Math::RandomInt(-10,10), 63, 100));
+		it->SetLocation(float3(Math::RandomReal(-10.0,10.0), 63, 100));
         it->SetScale(float3(1,1,1));
 	}
 
@@ -57,7 +57,7 @@ Tool::ReturnCode SandSimulator::Reset()
 		++it)
 	{
 		it->Reset();
-		it->SetLocation(float3(Math::RandomInt(-10, 10), 63, 100));
+		it->SetLocation(float3(Math::RandomReal(-10.0, 10.0), 63, 100));
 		it->SetScale(float3(1, 1, 1));
 	}
 	return Tool::Success();
@@ -126,6 +126,7 @@ Tool::ReturnCode SandSimulator::CheckDection(SandParticle& PaticleIn, std::list<
 {
 	for (std::list<SandParticle*>::iterator it = Cadidates.begin(); it != Cadidates.end(); ++it)
 	{
+        if (&PaticleIn == *it) continue;
 		this->HandleCollisionWith(PaticleIn, **it);
 	}
 	return Tool::Success();
@@ -154,8 +155,8 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, Sand
 		{
 			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
 			//fn points to t2
-			Target2.ApplyForce(Fn);
-			Target1.ApplyForce(Fn * -1);
+			//Target2.ApplyForce(Fn);
+			//Target1.ApplyForce(Fn * -1);
 		}
 	}
 	//apply friction

@@ -42,7 +42,7 @@ Tool::ReturnCode ConeRestriction::Apply(Particle& ParticleIn)
 		//points to T2
 		//ParticleIn.ApplyForce(Fn*-1);       
         
-		vel.y() = vel.y() * -0.001;
+		vel.y() = vel.y() * -1;
 		ParticleIn.SetLocation(x2);
 	}
 

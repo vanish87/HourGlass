@@ -22,7 +22,7 @@ void MainLoopBridge_ResetSimulator()
     GlobalGame.ResetSimulator();
 }
 
-void MainLoopBridge_ComfigureSimulator(float Mass, float Aphla, float Beta, float NormalRestitution)
+void MainLoopBridge_ConfigureSimulator(float Mass, float Aphla, float Beta, float NormalRestitution)
 {
     GlobalGame.GetSimulator().SetConntactParameter(Mass, Aphla,Beta, NormalRestitution);
 }

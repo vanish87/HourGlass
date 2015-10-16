@@ -30,7 +30,7 @@ public:
 	Tool::ReturnCode Reset();
 	Tool::ReturnCode SetConntactParameter(float Mass, float Alpha, float Beta, float NormalRestitution);
     
-    static const uint				NUMBER_OF_PARTICLES = 100;
+    static const uint				NUMBER_OF_PARTICLES = 500;
     static const Engine::float3		GRAVITY_CONSTANT;
     static const Engine::float3		FRICTION_CONSTANT;
 

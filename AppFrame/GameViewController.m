@@ -99,6 +99,7 @@ id <MTLDevice> _device;
 -(IBAction)sliderValueChanged:(UISlider *)sender
 {
     self.debugLabel.text = [NSString stringWithFormat:@"%f", sender.value];
+    MainLoopBridge_ConfigureSimulator(sender.value, 0.5,1.5,10);
 }
 -(IBAction)OnClick:(UIButton *)sender
 {
