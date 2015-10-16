@@ -12,6 +12,11 @@
 
 @interface GameViewController : UIViewController<MTKViewDelegate>
 
+@property (weak, nonatomic) IBOutlet UILabel *debugLabel;
+@property (weak, nonatomic) IBOutlet UISlider *slider;
+
+-(IBAction)sliderValueChanged:(UISlider *)sender;
+
 @end
 
 

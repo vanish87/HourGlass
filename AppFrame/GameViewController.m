@@ -68,6 +68,8 @@ id <MTLDevice> _device;
     [self _loadAssets];
     [self _reshape];
     
+    self.debugLabel.text = [NSString stringWithFormat:@"%f", self.slider.value];
+    
     MainLoopBridge_StartGameLoop();
 }
 
@@ -81,6 +83,7 @@ id <MTLDevice> _device;
     _view.depthStencilPixelFormat = MTLPixelFormatDepth32Float_Stencil8;
 }
 
+
 - (void)_setupMetal
 {
     // Set the view to use the default device
@@ -93,6 +96,10 @@ id <MTLDevice> _device;
     _defaultLibrary = [_device newDefaultLibrary];
 }
 
+-(IBAction)sliderValueChanged:(UISlider *)sender
+{
+    self.debugLabel.text = [NSString stringWithFormat:@"%f", sender.value];
+}
 
 void* Graphics_CreateMesh(enum MeshType Type)
 {

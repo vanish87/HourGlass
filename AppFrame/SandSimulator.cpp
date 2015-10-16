@@ -118,7 +118,7 @@ Tool::ReturnCode SandSimulator::HandleCollisionWith(SandParticle & Target1, Sand
 
 		if (Distance <= RadiusSum * RadiusSum && Distance > 0)
 		{
-			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius);
+			float3 Fn = SandSimulator::GetContactForce(x1, x2, m1, m2, v1, v2, Target1.Radius, Target2.Radius) * 0.0001;
 			//fn points to t2
 			Target2.ApplyForce(Fn);
 			Target1.ApplyForce(Fn * -1);

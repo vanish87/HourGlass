@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BC0B08DA1BD0E09F0025E475 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC0B08D81BD0E09F0025E475 /* Main.storyboard */; settings = {ASSET_TAGS = (); }; };
 		BC2902E01BCA60FF00905E14 /* SandSimulator.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902DE1BCA60FF00905E14 /* SandSimulator.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC2902E71BCE6FD000905E14 /* ConeRestriction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902E11BCE6FD000905E14 /* ConeRestriction.cpp */; settings = {ASSET_TAGS = (); }; };
 		BC2902E81BCE6FD000905E14 /* Restriction.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BC2902E31BCE6FD000905E14 /* Restriction.cpp */; settings = {ASSET_TAGS = (); }; };
@@ -57,6 +58,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BC0B08D91BD0E09F0025E475 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = AppFrame/Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		BC2902DE1BCA60FF00905E14 /* SandSimulator.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SandSimulator.cpp; sourceTree = "<group>"; };
 		BC2902DF1BCA60FF00905E14 /* Sandsimulator.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = Sandsimulator.hpp; sourceTree = "<group>"; };
 		BC2902E11BCE6FD000905E14 /* ConeRestriction.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ConeRestriction.cpp; sourceTree = "<group>"; };
@@ -152,6 +154,7 @@
 		BCDAC7651BADA55F00F05156 = {
 			isa = PBXGroup;
 			children = (
+				BC0B08D81BD0E09F0025E475 /* Main.storyboard */,
 				BCE33BF31BB93F220058338C /* CoreFoundation.framework */,
 				BCDAC7A91BADA5B900F05156 /* MetalKit.framework */,
 				BCDAC7701BADA55F00F05156 /* AppFrame */,
@@ -404,6 +407,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BCDAC7841BADA55F00F05156 /* LaunchScreen.storyboard in Resources */,
+				BC0B08DA1BD0E09F0025E475 /* Main.storyboard in Resources */,
 				BCDAC7811BADA55F00F05156 /* Assets.xcassets in Resources */,
 				BCDAC77F1BADA55F00F05156 /* Main.storyboard in Resources */,
 				BCE33B261BAEADFD0058338C /* NewTest.storyboard in Resources */,
@@ -489,6 +493,14 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		BC0B08D81BD0E09F0025E475 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				BC0B08D91BD0E09F0025E475 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
 		BCDAC77D1BADA55F00F05156 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
