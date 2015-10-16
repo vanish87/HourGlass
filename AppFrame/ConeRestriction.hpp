@@ -31,8 +31,8 @@ private:
 		k = [0, h];
 		Theta = [0, 2PI];
 	*/
-	const float h = 10;
-	const float r = 10;
+	const float h = 50;
+	const float r = 30;
 	const float Mass = 5000;
 	const Engine::float3 Position0 = Engine::float3(0, 0, 100);
 };
