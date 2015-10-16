@@ -82,7 +82,14 @@ namespace Physics
 	}
 	void Particle::SetMass(const float & NewMass)
 	{
-		this->Mass = NewMass;
+		if (Mass > 0)
+		{
+			this->Mass = NewMass;
+		}
+		else
+		{
+			//do nothing
+		}
 	}
 	const float3 Particle::GetVelocity() const
 	{
