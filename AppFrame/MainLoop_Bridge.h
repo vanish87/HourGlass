@@ -14,6 +14,7 @@ extern "C" {
 #endif
 void MainLoopBridge_StartGameLoop(void);
 void MainLoopBridge_ResetSimulator();
+void MainLoopBridge_ComfigureSimulator(float Mass, float Aphla, float Beta, float NormalRestitution);
 #ifdef __cplusplus
 }
 #endif

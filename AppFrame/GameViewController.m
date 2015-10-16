@@ -100,9 +100,9 @@ id <MTLDevice> _device;
 {
     self.debugLabel.text = [NSString stringWithFormat:@"%f", sender.value];
 }
--(IBAction)OnClick:(UIButton *)
+-(IBAction)OnClick:(UIButton *)sender
 {
-    
+    MainLoopBridge_ResetSimulator();
 }
 
 void* Graphics_CreateMesh(enum MeshType Type)

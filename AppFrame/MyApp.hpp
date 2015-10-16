@@ -26,6 +26,7 @@ public:
     virtual Tool::ReturnCode Update();
     
     void ResetSimulator();
+    SandSimulator& GetSimulator(){return SandSim;};
     
 private:
 	SandSimulator SandSim;
