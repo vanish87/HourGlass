@@ -32,7 +32,6 @@ SandParticle::~SandParticle()
 
 void SandParticle::Update()
 {
-	this->ApplyRestrictions();
 	Particle::Update();
 }
 

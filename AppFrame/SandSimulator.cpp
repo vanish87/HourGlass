@@ -88,17 +88,22 @@ Tool::ReturnCode SandSimulator::Update()
 	it != this->ParticlePool.end();
 		++it)
 	{
-        
         //apply gravity first
         it->ApplyForce(SandSimulator::GRAVITY_CONSTANT*it->GetMass());
+
+		//Update first: calculate velocity and position
+		//do some time correction if particles collided this frame
+		it->Update();
         
         const float3 Position = it->GetLocation();
         const int3 HashId = int3(Position.x(), Position.y(), Position.z()) / SandSimulator::VOXEL_CELL_SIZE;
         
+		//check detection and apply contact force
         this->CheckDection(*it, this->SpatialHash[HashId.x()][HashId.y()][HashId.z()]);
-        
-        
-        it->Update();
+
+		//Apply other restrictions(e.g glass boarder, floor)
+		it->ApplyRestrictions();
+
 		/*
 		float3 Friction = it->GetVelocity();
 		Friction = Friction * -1;

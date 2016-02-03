@@ -28,11 +28,11 @@ namespace Physics {
         Tool::ReturnCode Create(MeshType Type = SPHERE);
         virtual ~Particle();
         
-        virtual void Update();
+        virtual void Update(const float DeltaTime = MS_PER_UPDATE);
         virtual void Render();
 		virtual void Reset();
         
-        void ApplyForce(const float3& Force_);
+		void ApplyForce(const float3& Force_);
 
 		void SetLocation(const float3& NewLocation);
 		const float3 GetLocation() const;
@@ -44,14 +44,25 @@ namespace Physics {
 
 		const float3 GetVelocity() const;
 		void SetVelocity(const float3& NewVelocity);
-        
+
+		void ApplyCollisionCorrection(const float DeltaTimeFromLastFrame);
     protected:
-		float3 Location;//physics location that differs from render element's
-        float3 Velocity;
-        float3 Acceleration;
+		struct SpatialInfomation
+		{
+			float3 Location;//physics location that differs from render element's
+			float3 Velocity;
+			float3 Acceleration;
+			SpatialInfomation()
+				:Location(float3(0, 0, 0)), Velocity(float3(0, 0, 0)), Acceleration(float3(0, 0, 0)), Mass(1), Radius(1)
+			{}
+
+			float Mass;
+			float Radius;
+		};
+
+		SpatialInfomation LastFrameInfo;
+		SpatialInfomation CurrentFrameInfo;
         
-        float Mass;
-		float Radius;
         
         
     };

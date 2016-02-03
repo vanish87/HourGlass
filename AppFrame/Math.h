@@ -103,7 +103,13 @@ namespace Engine
 
 		//bool IntersectRayAABB(Ray* ray, AABBox* aabb);
 		//bool IntersectRayTriangle(Ray* ray, float3 a, float3 b, float3 c, float & t);
-	}
+
+
+		//Quadratic equation solver
+		//return true if it has root and root(s) is set to Root parameter
+		//return false if it has not root and Roots is set to (0, 0)
+		bool GetQuadraticRoot(Vec2<float>& Roots, const float a, const float b, const float c);
+}
 
 }
 
